@@ -3,81 +3,61 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard Kobo</title>
+<title>PEC Choléra 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   :root {
     color-scheme: light;
-    --bg: #f4f3f0;
-    --surface-1: #fcfcfb;
-    --border: #e4e2dc;
-    --grid: #ebeae6;
-    --text-primary: #0b0b0b;
-    --text-secondary: #52514e;
-    --text-muted: #7a7973;
-    --accent: #2a78d6;
-    --accent-soft: #cde2fb;
-    --series-1: #2a78d6;
-    --series-1-fill: rgba(42, 120, 214, .12);
+    --bg: #f4f3f0; --surface-1: #fcfcfb; --border: #e4e2dc; --grid: #ebeae6;
+    --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #7a7973;
+    --accent: #2a78d6; --accent-soft: #cde2fb;
+    --series-1: #2a78d6; --series-2: #eb6834; --series-1-fill: rgba(42,120,214,.10);
+    --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+    --good-ink: #006300; --warning-ink: #7a5200; --serious-ink: #9a3a12; --critical-ink: #a32424;
+    --badge-alpha: .14;
   }
   @media (prefers-color-scheme: dark) {
     :root:where(:not([data-theme="light"])) {
       color-scheme: dark;
-      --bg: #111110;
-      --surface-1: #1a1a19;
-      --border: #2e2e2b;
-      --grid: #282826;
-      --text-primary: #ffffff;
-      --text-secondary: #c3c2b7;
-      --text-muted: #8f8e86;
-      --accent: #3987e5;
-      --accent-soft: #184f95;
-      --series-1: #3987e5;
-      --series-1-fill: rgba(57, 135, 229, .18);
+      --bg: #111110; --surface-1: #1a1a19; --border: #2e2e2b; --grid: #282826;
+      --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8f8e86;
+      --accent: #3987e5; --accent-soft: #184f95;
+      --series-1: #3987e5; --series-2: #d95926; --series-1-fill: rgba(57,135,229,.16);
+      --good-ink: #5fd35f; --warning-ink: #fab219; --serious-ink: #f2a07f; --critical-ink: #f08080;
+      --badge-alpha: .22;
     }
   }
   :root[data-theme="dark"] {
     color-scheme: dark;
-    --bg: #111110;
-    --surface-1: #1a1a19;
-    --border: #2e2e2b;
-    --grid: #282826;
-    --text-primary: #ffffff;
-    --text-secondary: #c3c2b7;
-    --text-muted: #8f8e86;
-    --accent: #3987e5;
-    --accent-soft: #184f95;
-    --series-1: #3987e5;
-    --series-1-fill: rgba(57, 135, 229, .18);
+    --bg: #111110; --surface-1: #1a1a19; --border: #2e2e2b; --grid: #282826;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8f8e86;
+    --accent: #3987e5; --accent-soft: #184f95;
+    --series-1: #3987e5; --series-2: #d95926; --series-1-fill: rgba(57,135,229,.16);
+    --good-ink: #5fd35f; --warning-ink: #fab219; --serious-ink: #f2a07f; --critical-ink: #f08080;
+    --badge-alpha: .22;
   }
 
   * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text-primary);
-    font: 14px/1.5 Inter, system-ui, -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 16px 64px; }
+  body { margin: 0; background: var(--bg); color: var(--text-primary); font: 14px/1.5 Inter, system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 24px 16px 64px; }
   header { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; }
   h1 { font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -.01em; }
   .sub { color: var(--text-secondary); font-size: 13px; margin-top: 4px; }
   h2 { font-size: 15px; font-weight: 600; margin: 0 0 2px; }
   .card-sub { color: var(--text-muted); font-size: 12px; margin-bottom: 12px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
   .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
   .seg { display: inline-flex; background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
   .seg button { border: 0; background: none; color: var(--text-secondary); font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
   .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
-  select, input[type=search] {
-    font: inherit; font-size: 13px; color: var(--text-primary); background: var(--surface-1);
-    border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; min-width: 0;
-  }
-  .btn { font: inherit; font-size: 13px; color: var(--text-primary); background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; cursor: pointer; }
-  .btn:hover, .seg button:not([aria-pressed="true"]):hover { background: var(--grid); }
+  .seg button:disabled { opacity: .4; cursor: default; }
+  select, input[type=search] { font: inherit; font-size: 13px; color: var(--text-primary); background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; min-width: 0; }
+  .btn { font: inherit; font-size: 13px; color: var(--text-primary); background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover, .seg button:not([aria-pressed="true"]):not(:disabled):hover { background: var(--grid); }
 
-  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
   .kpi, .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; }
   .kpi { padding: 14px 16px; }
   .kpi .label { color: var(--text-secondary); font-size: 12px; font-weight: 500; }
@@ -85,96 +65,187 @@
   .kpi .hint { color: var(--text-muted); font-size: 12px; }
 
   .card { padding: 16px; margin-bottom: 16px; min-width: 0; }
-  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; margin-bottom: 16px; }
   .grid2 .card { margin-bottom: 0; }
-  .section-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .04em; margin: 28px 0 12px; }
-  .chart-box { position: relative; height: 260px; }
-  #map { height: 360px; border-radius: 8px; z-index: 0; }
+  .chart-box { position: relative; height: 280px; }
+  .legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
-  th { color: var(--text-secondary); font-weight: 600; position: sticky; top: 0; background: var(--surface-1); }
+  th { color: var(--text-secondary); font-weight: 600; position: sticky; top: 0; background: var(--surface-1); z-index: 1; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-  .table-scroll { overflow: auto; max-height: 480px; }
-  .table-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-  .table-tools input { flex: 1 1 200px; }
-  .empty { color: var(--text-muted); text-align: center; padding: 48px 16px; }
+  td.unit { font-weight: 500; }
+  .muted { color: var(--text-muted); font-size: 12px; }
+  .stale { color: var(--serious-ink); }
+  .table-scroll { overflow: auto; max-height: 520px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 12px; overflow-x: auto; }
+  .tabs button { border: 0; background: none; font: inherit; font-size: 13px; color: var(--text-secondary); padding: 8px 12px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tabs button[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--accent); font-weight: 600; }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 999px; }
+  .badge .ic { font-size: 11px; line-height: 1; }
+  .b-good { color: var(--good-ink); background: color-mix(in srgb, var(--good) calc(var(--badge-alpha) * 100%), transparent); }
+  .b-warning { color: var(--warning-ink); background: color-mix(in srgb, var(--warning) calc(var(--badge-alpha) * 100%), transparent); }
+  .b-serious { color: var(--serious-ink); background: color-mix(in srgb, var(--serious) calc(var(--badge-alpha) * 100%), transparent); }
+  .b-critical { color: var(--critical-ink); background: color-mix(in srgb, var(--critical) calc(var(--badge-alpha) * 100%), transparent); }
+  .b-none { color: var(--text-muted); }
+  .qty { color: var(--text-muted); font-size: 11px; margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .stock-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+
+  .empty { color: var(--text-muted); text-align: center; padding: 40px 16px; }
   .banner { background: var(--accent-soft); color: var(--text-primary); border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px; }
-  @media (max-width: 420px) { .grid2 { grid-template-columns: 1fr; } .kpi .value { font-size: 24px; } }
+  .note { color: var(--text-muted); font-size: 12px; margin-top: 10px; }
+  @media (max-width: 420px) { .grid2 { grid-template-columns: 1fr; } .kpi .value { font-size: 24px; } .kpis { grid-template-columns: 1fr 1fr; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div>
-      <h1 id="title">Dashboard Kobo</h1>
+      <h1 id="title">Prise en charge du choléra</h1>
       <div class="sub" id="updated">Chargement des données…</div>
     </div>
-    <button class="btn" id="theme" type="button" aria-label="Changer de thème">Thème</button>
+    <div class="actions">
+      <a class="btn" href="explorateur.html">Explorer toutes les réponses</a>
+      <button class="btn" id="theme" type="button" aria-label="Changer de thème">Thème</button>
+    </div>
   </header>
 
   <div id="banner"></div>
 
   <div class="filters" role="group" aria-label="Filtres">
-    <div class="seg" id="period">
-      <button type="button" data-days="0" aria-pressed="true">Tout</button>
-      <button type="button" data-days="7" aria-pressed="false">7 j</button>
-      <button type="button" data-days="30" aria-pressed="false">30 j</button>
-      <button type="button" data-days="90" aria-pressed="false">90 j</button>
+    <div class="seg" id="level" aria-label="Niveau">
+      <button type="button" data-level="region">Régions</button>
+      <button type="button" data-level="district">Districts</button>
+      <button type="button" data-level="as">Aires de santé</button>
     </div>
-    <select id="enum" aria-label="Enquêteur" hidden></select>
+    <select id="region-filter" aria-label="Région"></select>
   </div>
 
   <div class="kpis" id="kpis"></div>
 
-  <div class="card">
-    <h2>Soumissions par jour</h2>
-    <div class="card-sub">Nombre de formulaires reçus chaque jour</div>
-    <div class="chart-box"><canvas id="timeline" role="img" aria-label="Soumissions par jour"></canvas></div>
+  <div class="grid2">
+    <div class="card">
+      <h2>Évolution des cas et décès cumulés</h2>
+      <div class="card-sub" id="evo-sub"></div>
+      <div class="legend"><span><i style="background:var(--series-1)"></i>Cas</span><span><i style="background:var(--series-2)"></i>Décès</span></div>
+      <div class="chart-box"><canvas id="evo" role="img" aria-label="Évolution des cas et décès cumulés"></canvas></div>
+    </div>
+    <div class="card">
+      <h2 id="bars-title">Cas et décès par unité</h2>
+      <div class="card-sub">Dernier rapport de chaque unité · survoler pour la létalité</div>
+      <div class="legend"><span><i style="background:var(--series-1)"></i>Cas</span><span><i style="background:var(--series-2)"></i>Décès</span></div>
+      <div class="chart-box" id="bars-box"><canvas id="bars" role="img" aria-label="Cas et décès par unité"></canvas></div>
+    </div>
   </div>
 
-  <div class="card" id="map-card" hidden>
-    <h2>Localisation des soumissions</h2>
-    <div class="card-sub" id="map-sub"></div>
-    <div id="map"></div>
+  <div class="card" id="stock-card">
+    <h2>État des stocks</h2>
+    <div class="card-sub">Dernier rapport de chaque unité · quantité en cartons ou unités entre parenthèses</div>
+    <div class="stock-legend" id="stock-legend"></div>
+    <div class="table-scroll"><table id="stock-table"></table></div>
   </div>
 
-  <div id="cat-section"></div>
-  <div id="num-section"></div>
+  <div class="grid2" id="severity-row">
+    <div class="card">
+      <h2>État des patients à l'arrivée</h2>
+      <div class="card-sub">Cumul des derniers rapports</div>
+      <div class="chart-box" style="height:220px"><canvas id="severity" role="img" aria-label="État des patients à l'arrivée"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Occupation des lits dédiés</h2>
+      <div class="card-sub">Patients internés / lits dédiés au choléra</div>
+      <div class="chart-box" style="height:220px" id="occ-box"><canvas id="occupation" role="img" aria-label="Occupation des lits"></canvas></div>
+    </div>
+  </div>
 
-  <div class="section-title">Données</div>
   <div class="card">
-    <div class="table-tools">
-      <input type="search" id="search" placeholder="Rechercher dans les soumissions…" aria-label="Rechercher">
+    <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-tab="capacite" aria-selected="true">Capacités d'accueil</button>
+      <button role="tab" data-tab="rh" aria-selected="false">Ressources humaines</button>
+      <button role="tab" data-tab="communaute" aria-selected="false">Communauté</button>
+    </div>
+    <div class="table-scroll"><table id="detail-table"></table></div>
+  </div>
+
+  <div class="card">
+    <h2>Derniers rapports reçus</h2>
+    <div class="card-sub" id="reports-sub"></div>
+    <div class="actions" style="margin-bottom:12px">
+      <input type="search" id="search" placeholder="Rechercher une unité, un enquêteur…" aria-label="Rechercher" style="flex:1 1 200px">
       <button class="btn" id="csv" type="button">Exporter CSV</button>
     </div>
-    <div class="table-scroll"><table id="table"></table></div>
-    <div class="card-sub" id="table-note" style="margin:10px 0 0"></div>
+    <div class="table-scroll"><table id="reports"></table></div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 (() => {
-  const state = { data: null, days: 0, enumerator: "", search: "" };
+  // Niveaux de la fiche : chaque soumission décrit UNE unité (région, district ou aire de santé)
+  // avec des chiffres cumulés « à date ». La situation actuelle = dernier rapport de chaque unité.
+  const LEVELS = {
+    region:   { fiche: "cerple_region", unit: "region",         label: "Régions",        one: "région",        cas: "nb_cas_region",   deces: "nb_deces_region",   grp: "fiche_region/",   sfx: "_region" },
+    district: { fiche: "chef_district", unit: "district_sante", label: "Districts",      one: "district",      cas: "nb_cas_district", deces: "nb_deces_district", grp: "fiche_district/", sfx: "_district" },
+    as:       { fiche: "chef_as",       unit: "aire_sante",     label: "Aires de santé", one: "aire de santé", cas: "nb_cas_as",       deces: "nb_deces_as",       grp: "fiche_as/",       sfx: "_as" },
+  };
+  const STOCKS = [["ringer", "Ringer Lactate"], ["serum", "Sérum salé 0,9 %"], ["sro", "SRO"], ["chlore", "Chlore"], ["epi", "Kits EPI"]];
+  const STATUS = {
+    suffisant:    ["good", "✓", "Suffisant"],
+    modere:       ["warning", "!", "Modéré"],
+    sous_tension: ["serious", "▲", "Sous tension"],
+    insuffisant:  ["critical", "✕", "Insuffisant"],
+    rupture:      ["critical", "✕", "Rupture"],
+  };
+  const STALE_DAYS = 7;
+
+  const state = { data: null, level: "region", region: "", tab: "capacite", search: "" };
   const charts = [];
-  let map, markerLayer;
   const nf = new Intl.NumberFormat("fr-FR");
   const nf1 = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
   const $ = (id) => document.getElementById(id);
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const subDate = (s) => s._submission_time ? new Date(s._submission_time.endsWith("Z") ? s._submission_time : s._submission_time + "Z") : null;
-  const dayKey = (d) => d.toISOString().slice(0, 10);
+  const num = (v) => { const n = parseFloat(v); return isFinite(n) ? n : null; };
+  const sum = (arr) => arr.reduce((a, b) => a + (b || 0), 0);
+  const pct = (a, b) => (b ? (a / b) * 100 : null);
+
+  // ---------- Accès aux données ----------
+  const fieldByName = {};
+  function choiceLabel(name, value) {
+    const f = fieldByName[name];
+    const c = f && (f.choices || []).find((c) => c.name === value);
+    return c ? c.label : (value ?? "");
+  }
+  function subDate(s) {
+    if (s.date_recueil) return new Date(String(s.date_recueil).slice(0, 10) + "T12:00:00Z");
+    if (s._submission_time) return new Date(s._submission_time.endsWith("Z") ? s._submission_time : s._submission_time + "Z");
+    return null;
+  }
+  const sortKey = (s) => `${subDate(s)?.toISOString() || ""}|${s._submission_time || ""}`;
+  const levelOf = (s) => Object.keys(LEVELS).find((k) => LEVELS[k].fiche === s.type_fiche);
+  const m = (s, L, key) => num(s[L.grp + key + L.sfx]);      // champ de groupe (ex. fiche_region/nb_lits_dispo_region)
+  const raw = (s, L, key) => s[L.grp + key + L.sfx];
+  const unitName = (s, L) => choiceLabel(L.unit, s[L.unit]) || "—";
+
+  function reportsOf(levelKey) {
+    return state.data.submissions
+      .filter((s) => levelOf(s) === levelKey && s[LEVELS[levelKey].unit])
+      .filter((s) => !state.region || s.region === state.region)
+      .sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+  }
+  function latestByUnit(levelKey, until) {
+    const L = LEVELS[levelKey], map = new Map();
+    reportsOf(levelKey).forEach((s) => { if (!until || subDate(s) <= until) map.set(s[L.unit], s); });
+    return [...map.values()];
+  }
 
   // ---------- Thème ----------
   try { const t = localStorage.getItem("kobo-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   $("theme").addEventListener("click", () => {
-    const dark = document.documentElement.dataset.theme
-      ? document.documentElement.dataset.theme === "dark"
-      : matchMedia("(prefers-color-scheme: dark)").matches;
-    const next = dark ? "light" : "dark";
+    const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const next = cur === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     try { localStorage.setItem("kobo-theme", next); } catch (e) {}
     render();
@@ -182,39 +253,20 @@
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
 
   // ---------- Filtres ----------
-  $("period").addEventListener("click", (e) => {
-    const b = e.target.closest("button"); if (!b) return;
-    state.days = +b.dataset.days;
-    $("period").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
-    render();
+  $("level").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b || b.disabled) return;
+    state.level = b.dataset.level; render();
   });
-  $("enum").addEventListener("change", (e) => { state.enumerator = e.target.value; render(); });
-  $("search").addEventListener("input", (e) => { state.search = e.target.value.toLowerCase(); renderTable(); });
+  $("region-filter").addEventListener("change", (e) => { state.region = e.target.value; render(); });
+  $("tabs").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    state.tab = b.dataset.tab;
+    $("tabs").querySelectorAll("button").forEach((x) => x.setAttribute("aria-selected", x === b));
+    renderDetail();
+  });
+  $("search").addEventListener("input", (e) => { state.search = e.target.value.toLowerCase(); renderReports(); });
   $("csv").addEventListener("click", exportCsv);
 
-  function filtered() {
-    const subs = state.data.submissions;
-    const cutoff = state.days ? Date.now() - state.days * 864e5 : 0;
-    return subs.filter((s) => {
-      if (state.enumerator && (s._submitted_by || "—") !== state.enumerator) return false;
-      if (cutoff) { const d = subDate(s); if (!d || d < cutoff) return false; }
-      return true;
-    });
-  }
-
-  // ---------- Libellés ----------
-  function choiceLabel(field, value) {
-    const c = (field.choices || []).find((c) => c.name === value);
-    return c ? c.label : value;
-  }
-  function displayValue(field, v) {
-    if (v == null || v === "") return "";
-    if (field.type === "select_one") return choiceLabel(field, v);
-    if (field.type === "select_multiple") return String(v).split(" ").map((x) => choiceLabel(field, x)).join(", ");
-    return v;
-  }
-
-  // ---------- Chart.js défauts ----------
   function chartDefaults() {
     Chart.defaults.font.family = "Inter, system-ui, sans-serif";
     Chart.defaults.font.size = 12;
@@ -222,7 +274,7 @@
     Chart.defaults.borderColor = css("--grid");
     Object.assign(Chart.defaults.plugins.tooltip, {
       backgroundColor: css("--surface-1"), titleColor: css("--text-primary"), bodyColor: css("--text-secondary"),
-      borderColor: css("--border"), borderWidth: 1, padding: 10, cornerRadius: 8, displayColors: false,
+      borderColor: css("--border"), borderWidth: 1, padding: 10, cornerRadius: 8, boxPadding: 4,
     });
     Chart.defaults.plugins.legend.display = false;
   }
@@ -230,210 +282,254 @@
   // ---------- Rendu ----------
   function render() {
     if (!state.data) return;
+    $("level").querySelectorAll("button").forEach((b) => {
+      b.setAttribute("aria-pressed", b.dataset.level === state.level);
+      b.disabled = !state.data.submissions.some((s) => levelOf(s) === b.dataset.level);
+    });
     charts.splice(0).forEach((c) => c.destroy());
     chartDefaults();
-    const subs = filtered();
-    renderKpis(subs);
-    renderTimeline(subs);
-    renderMap(subs);
-    renderCategorical(subs);
-    renderNumeric(subs);
-    renderTable();
+    const L = LEVELS[state.level];
+    const latest = latestByUnit(state.level);
+    renderKpis(L, latest);
+    renderEvolution(L);
+    renderBars(L, latest);
+    renderStocks(L, latest);
+    renderSeverity(L, latest);
+    renderDetail();
+    renderReports();
   }
 
-  function renderKpis(subs) {
-    const now = Date.now();
-    const last7 = subs.filter((s) => { const d = subDate(s); return d && now - d <= 7 * 864e5; }).length;
-    const enums = new Set(subs.map((s) => s._submitted_by).filter(Boolean));
-    const last = subs.length ? subDate(subs[subs.length - 1]) : null;
+  function daysAgo(d) { return d ? Math.floor((Date.now() - d) / 864e5) : null; }
+  function freshness(s) {
+    const d = subDate(s), n = daysAgo(d);
+    const txt = d ? d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "—";
+    return n != null && n > STALE_DAYS ? `<span class="stale" title="Rapport de plus de ${STALE_DAYS} jours">${txt} · ${n} j</span>` : `<span class="muted">${txt}</span>`;
+  }
+
+  function renderKpis(L, latest) {
+    const cas = sum(latest.map((s) => num(s[L.cas])));
+    const deces = sum(latest.map((s) => num(s[L.deces])));
+    const let_ = pct(deces, cas);
+    const hasHosp = state.level !== "as";
+    const internes = hasHosp ? sum(latest.map((s) => m(s, L, "nb_patients_internes"))) : null;
+    const gueris = hasHosp ? sum(latest.map((s) => m(s, L, "nb_patients_gueris"))) : null;
+    const total = state.level === "region" && !state.region ? (fieldByName.region?.choices || []).length : null;
+    const stale = latest.filter((s) => daysAgo(subDate(s)) > STALE_DAYS).length;
+    const alerts = state.level === "as" ? null : latest.reduce((n, s) => n + STOCKS.filter(([k]) => ["critical"].includes(stockStatus(s, L, k)?.[0])).length, 0);
     const tiles = [
-      ["Soumissions", nf.format(subs.length), state.days ? `sur ${state.days} jours` : "au total"],
-      ["7 derniers jours", nf.format(last7), "soumissions récentes"],
-      ["Enquêteurs", nf.format(enums.size), "comptes Kobo actifs"],
-      ["Dernière soumission", last ? last.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "—",
-        last ? last.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "aucune donnée"],
+      ["Cas cumulés", nf.format(cas), `somme des ${latest.length} ${L.label.toLowerCase()}`],
+      ["Décès cumulés", nf.format(deces), "à date"],
+      ["Létalité", let_ == null ? "—" : nf1.format(let_) + " %", "décès / cas"],
+      ...(hasHosp ? [["Patients internés", nf.format(internes), "actuellement"], ["Patients guéris", nf.format(gueris), "à date"]] : []),
+      [`${L.label} rapportant`, total ? `${latest.length}/${total}` : nf.format(latest.length), stale ? `${stale} rapport${stale > 1 ? "s" : ""} de + de ${STALE_DAYS} j` : "rapports à jour"],
+      ...(alerts != null ? [["Alertes stocks", nf.format(alerts), "produits en rupture ou insuffisants"]] : []),
     ];
-    $("kpis").innerHTML = tiles.map(([l, v, h]) =>
-      `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="hint">${h}</div></div>`).join("");
+    $("kpis").innerHTML = tiles.map(([l, v, h]) => `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="hint">${h}</div></div>`).join("");
   }
 
-  function renderTimeline(subs) {
-    const counts = new Map();
-    subs.forEach((s) => { const d = subDate(s); if (d) counts.set(dayKey(d), (counts.get(dayKey(d)) || 0) + 1); });
-    const keys = [...counts.keys()].sort();
-    const labels = [], values = [];
-    if (keys.length) {
-      // Remplit les jours sans soumission par 0 pour une échelle de temps continue
-      for (let d = new Date(keys[0] + "T00:00:00Z"), end = new Date(keys[keys.length - 1] + "T00:00:00Z"); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
-        const k = dayKey(d); labels.push(k); values.push(counts.get(k) || 0);
-      }
-    }
-    const fmt = (k) => new Date(k + "T00:00:00Z").toLocaleDateString("fr-FR", { day: "numeric", month: "short", timeZone: "UTC" });
-    charts.push(new Chart($("timeline"), {
+  function renderEvolution(L) {
+    const reports = reportsOf(state.level);
+    const days = [...new Set(reports.map((s) => subDate(s)?.toISOString().slice(0, 10)).filter(Boolean))].sort();
+    // À chaque date : somme du dernier chiffre connu de chaque unité
+    const last = new Map(); let i = 0;
+    const cas = [], deces = [];
+    days.forEach((d) => {
+      for (; i < reports.length && subDate(reports[i]).toISOString().slice(0, 10) <= d; i++) last.set(reports[i][L.unit], reports[i]);
+      cas.push(sum([...last.values()].map((s) => num(s[L.cas]))));
+      deces.push(sum([...last.values()].map((s) => num(s[L.deces]))));
+    });
+    $("evo-sub").textContent = `Somme des derniers chiffres connus de chaque ${L.one}, par date de recueil`;
+    const fmt = (k) => new Date(k + "T12:00:00Z").toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+    const ds = (data, color, fill) => ({ data, borderColor: css(color), backgroundColor: fill ? css("--series-1-fill") : css(color), fill, borderWidth: 2, tension: 0,
+      pointRadius: days.length > 30 ? 0 : 3, pointHoverRadius: 5, pointBackgroundColor: css(color), pointBorderColor: css("--surface-1"), pointBorderWidth: 2 });
+    charts.push(new Chart($("evo"), {
       type: "line",
-      data: { labels, datasets: [{ data: values, borderColor: css("--series-1"), backgroundColor: css("--series-1-fill"),
-        fill: true, borderWidth: 2, tension: 0, pointRadius: labels.length > 40 ? 0 : 3, pointHoverRadius: 5,
-        pointBackgroundColor: css("--series-1"), pointBorderColor: css("--surface-1"), pointBorderWidth: 2 }] },
+      data: { labels: days, datasets: [{ label: "Cas", ...ds(cas, "--series-1", true) }, { label: "Décès", ...ds(deces, "--series-2", false) }] },
       options: {
-        responsive: true, maintainAspectRatio: false,
-        interaction: { mode: "index", intersect: false },
-        scales: {
-          x: { grid: { display: false }, ticks: { maxTicksLimit: 8, callback: (v, i) => fmt(labels[i]) } },
-          y: { beginAtZero: true, ticks: { precision: 0 }, border: { display: false } },
-        },
+        responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
+        scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 7, callback: (v, j) => fmt(days[j]) } },
+                  y: { beginAtZero: true, ticks: { precision: 0 }, border: { display: false } } },
         plugins: { tooltip: { callbacks: {
-          title: (it) => fmt(labels[it[0].dataIndex]),
-          label: (it) => `${nf.format(it.parsed.y)} soumission${it.parsed.y > 1 ? "s" : ""}`,
+          title: (it) => fmt(days[it[0].dataIndex]),
+          label: (it) => ` ${it.dataset.label} : ${nf.format(it.parsed.y)}`,
+          afterBody: (it) => { const l = pct(deces[it[0].dataIndex], cas[it[0].dataIndex]); return l == null ? "" : `Létalité : ${nf1.format(l)} %`; },
         } } },
       },
     }));
   }
 
-  function geoOf(s) {
-    const g = s._geolocation;
-    if (Array.isArray(g) && g[0] != null && g[1] != null) return [+g[0], +g[1]];
-    const gp = state.data.form.fields.find((f) => f.type === "geopoint" && s[f.name]);
-    if (gp) { const [a, b] = String(s[gp.name]).split(" ").map(Number); if (isFinite(a) && isFinite(b)) return [a, b]; }
+  function renderBars(L, latest) {
+    const rows = latest.map((s) => ({ name: unitName(s, L), cas: num(s[L.cas]) || 0, deces: num(s[L.deces]) || 0 }))
+      .sort((a, b) => b.cas - a.cas);
+    $("bars-title").textContent = `Cas et décès par ${L.one}`;
+    $("bars-box").style.height = Math.max(200, rows.length * 44 + 40) + "px";
+    charts.push(new Chart($("bars"), {
+      type: "bar",
+      data: { labels: rows.map((r) => r.name), datasets: [
+        { label: "Cas", data: rows.map((r) => r.cas), backgroundColor: css("--series-1"), borderRadius: 4, borderSkipped: "start", barThickness: 14, categoryPercentage: .8 },
+        { label: "Décès", data: rows.map((r) => r.deces), backgroundColor: css("--series-2"), borderRadius: 4, borderSkipped: "start", barThickness: 14, categoryPercentage: .8 },
+      ] },
+      options: {
+        indexAxis: "y", responsive: true, maintainAspectRatio: false, interaction: { mode: "index", axis: "y", intersect: false },
+        scales: { x: { beginAtZero: true, ticks: { precision: 0 }, border: { display: false } },
+                  y: { grid: { display: false }, ticks: { color: css("--text-primary") } } },
+        plugins: { tooltip: { callbacks: {
+          label: (it) => ` ${it.dataset.label} : ${nf.format(it.parsed.x)}`,
+          afterBody: (it) => { const r = rows[it[0].dataIndex], l = pct(r.deces, r.cas); return l == null ? "" : `Létalité : ${nf1.format(l)} %`; },
+        } } },
+      },
+    }));
+  }
+
+  function stockStatus(s, L, key) {
+    const dispo = raw(s, L, `stock_${key}`);
+    if (dispo === "non") return STATUS.rupture;
+    if (dispo === "oui") return STATUS[raw(s, L, `etat_stock_${key}`)] || ["none", "", "Disponible"];
     return null;
   }
+  const badge = (st) => st ? `<span class="badge b-${st[0]}">${st[1] ? `<span class="ic" aria-hidden="true">${st[1]}</span>` : ""}${st[2]}</span>` : `<span class="b-none">—</span>`;
 
-  function renderMap(subs) {
-    const pts = subs.map((s) => [s, geoOf(s)]).filter(([, g]) => g);
-    const hasGeo = state.data.submissions.some(geoOf);
-    $("map-card").hidden = !hasGeo;
-    if (!hasGeo || typeof L === "undefined") return;
-    $("map-sub").textContent = `${nf.format(pts.length)} point${pts.length > 1 ? "s" : ""} GPS`;
-    if (!map) {
-      map = L.map("map", { scrollWheelZoom: false }).setView([0, 0], 2);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: "© OpenStreetMap" }).addTo(map);
-      markerLayer = L.layerGroup().addTo(map);
-    }
-    markerLayer.clearLayers();
-    const color = css("--series-1"), ring = css("--surface-1");
-    pts.forEach(([s, g]) => {
-      const d = subDate(s);
-      L.circleMarker(g, { radius: 6, color: ring, weight: 2, fillColor: color, fillOpacity: .9 })
-        .bindTooltip(`${esc(s._submitted_by || "Soumission")} — ${d ? d.toLocaleString("fr-FR") : ""}`)
-        .addTo(markerLayer);
-    });
-    requestAnimationFrame(() => {
-      map.invalidateSize();
-      if (pts.length) map.fitBounds(pts.map(([, g]) => g), { padding: [24, 24], maxZoom: 13 });
-      else map.setView([0, 0], 2);
-    });
+  function renderStocks(L, latest) {
+    const show = state.level !== "as";
+    $("stock-card").hidden = !show;
+    if (!show) return;
+    $("stock-legend").innerHTML = ["suffisant", "modere", "sous_tension", "insuffisant", "rupture"].map((k) => badge(STATUS[k])).join("");
+    const rank = { critical: 0, serious: 1, warning: 2, good: 3, none: 4 };
+    const rows = latest.map((s) => ({ s, worst: Math.min(...STOCKS.map(([k]) => rank[stockStatus(s, L, k)?.[0]] ?? 5)) }))
+      .sort((a, b) => a.worst - b.worst || unitName(a.s, L).localeCompare(unitName(b.s, L)));
+    $("stock-table").innerHTML = rows.length ? `<thead><tr><th>${L.one[0].toUpperCase() + L.one.slice(1)}</th>${STOCKS.map(([, l]) => `<th>${l}</th>`).join("")}<th>Mis à jour</th></tr></thead><tbody>` +
+      rows.map(({ s }) => `<tr><td class="unit">${esc(unitName(s, L))}</td>${STOCKS.map(([k]) => {
+        const q = m(s, L, `qte_stock_${k}`);
+        return `<td>${badge(stockStatus(s, L, k))}${q != null && raw(s, L, `stock_${k}`) === "oui" ? `<span class="qty">(${nf.format(q)})</span>` : ""}</td>`;
+      }).join("")}<td>${freshness(s)}</td></tr>`).join("") + "</tbody>"
+      : `<tbody><tr><td class="empty">Aucun rapport pour ce niveau.</td></tr></tbody>`;
   }
 
-  function renderCategorical(subs) {
-    const fields = state.data.form.fields.filter((f) => f.type === "select_one" || f.type === "select_multiple");
-    const sec = $("cat-section");
-    if (!fields.length) { sec.innerHTML = ""; return; }
-    sec.innerHTML = `<div class="section-title">Réponses aux questions à choix</div><div class="grid2">` +
-      fields.map((f, i) => `<div class="card"><h2>${esc(f.label)}</h2><div class="card-sub" id="cat-sub-${i}"></div>
-        <div class="chart-box" id="cat-box-${i}"><canvas id="cat-${i}" role="img" aria-label="${esc(f.label)}"></canvas></div></div>`).join("") + `</div>`;
+  function renderSeverity(L, latest) {
+    const show = state.level !== "as";
+    $("severity-row").hidden = !show;
+    if (!show) return;
+    const cats = [["nb_deshydrat_legere", "Déshydratation légère"], ["nb_deshydrat_moderee", "Déshydratation modérée"], ["nb_deshydrat_severe", "Déshydratation sévère"], ["nb_arrives_decedes", "Arrivés décédés"]];
+    const vals = cats.map(([k]) => sum(latest.map((s) => m(s, L, k))));
+    const tot = sum(vals);
+    charts.push(new Chart($("severity"), {
+      type: "bar",
+      data: { labels: cats.map(([, l]) => l), datasets: [{ data: vals, backgroundColor: css("--series-1"), borderRadius: 4, borderSkipped: "start", barThickness: 22 }] },
+      options: {
+        indexAxis: "y", responsive: true, maintainAspectRatio: false,
+        scales: { x: { beginAtZero: true, ticks: { precision: 0 }, border: { display: false } }, y: { grid: { display: false }, ticks: { color: css("--text-primary") } } },
+        plugins: { tooltip: { displayColors: false, callbacks: { label: (it) => `${nf.format(it.parsed.x)} patients (${tot ? nf1.format(it.parsed.x / tot * 100) : 0} %)` } } },
+      },
+    }));
 
-    fields.forEach((f, i) => {
-      const counts = new Map((f.choices || []).map((c) => [c.name, 0]));
-      let answered = 0;
-      subs.forEach((s) => {
-        const v = s[f.name]; if (v == null || v === "") return;
-        answered++;
-        (f.type === "select_multiple" ? String(v).split(" ") : [String(v)])
-          .forEach((x) => counts.set(x, (counts.get(x) || 0) + 1));
-      });
-      const entries = [...counts.entries()];
-      const labels = entries.map(([k]) => choiceLabel(f, k));
-      const values = entries.map(([, v]) => v);
-      $(`cat-sub-${i}`).textContent = `${nf.format(answered)} réponse${answered > 1 ? "s" : ""}` +
-        (f.type === "select_multiple" ? " · choix multiples" : "");
-      $(`cat-box-${i}`).style.height = Math.max(140, labels.length * 34 + 40) + "px";
-      charts.push(new Chart($(`cat-${i}`), {
-        type: "bar",
-        data: { labels, datasets: [{ data: values, backgroundColor: css("--series-1"), borderRadius: 4,
-          borderSkipped: "start", barThickness: 18, maxBarThickness: 18 }] },
-        options: {
-          indexAxis: "y", responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { beginAtZero: true, ticks: { precision: 0 }, border: { display: false } },
-            y: { grid: { display: false }, ticks: { color: css("--text-primary"),
-              callback: (v, j) => { const t = labels[j]; return t.length > 28 ? t.slice(0, 27) + "…" : t; } } },
-          },
-          plugins: { tooltip: { callbacks: {
-            title: (it) => labels[it[0].dataIndex],
-            label: (it) => `${nf.format(it.parsed.x)} (${answered ? nf1.format(it.parsed.x / answered * 100) : 0} % des répondants)`,
-          } } },
-        },
-      }));
-    });
+    const occ = latest.map((s) => ({ name: unitName(s, L), internes: m(s, L, "nb_patients_internes") || 0, lits: m(s, L, "nb_lits_dedies") || 0 }))
+      .filter((r) => r.lits || r.internes).map((r) => ({ ...r, taux: r.lits ? r.internes / r.lits * 100 : null })).sort((a, b) => (b.taux ?? 999) - (a.taux ?? 999));
+    $("occ-box").style.height = Math.max(220, occ.length * 32 + 40) + "px";
+    const colorFor = (t) => css(t == null || t >= 100 ? "--critical" : t >= 80 ? "--serious" : "--series-1");
+    charts.push(new Chart($("occupation"), {
+      type: "bar",
+      data: { labels: occ.map((r) => r.name), datasets: [{ data: occ.map((r) => r.taux == null ? 100 : Math.min(r.taux, 150)), backgroundColor: occ.map((r) => colorFor(r.taux)), borderRadius: 4, borderSkipped: "start", barThickness: 16 }] },
+      options: {
+        indexAxis: "y", responsive: true, maintainAspectRatio: false,
+        scales: { x: { beginAtZero: true, suggestedMax: 100, ticks: { callback: (v) => v + " %" }, border: { display: false } }, y: { grid: { display: false }, ticks: { color: css("--text-primary") } } },
+        plugins: { tooltip: { displayColors: false, callbacks: { label: (it) => { const r = occ[it.dataIndex];
+          return [`${nf.format(r.internes)} internés / ${nf.format(r.lits)} lits dédiés`, r.taux == null ? "Aucun lit dédié" : `Occupation : ${nf1.format(r.taux)} %${r.taux >= 100 ? " — saturé" : r.taux >= 80 ? " — tension" : ""}`]; } } } },
+      },
+    }));
   }
 
-  function renderNumeric(subs) {
-    const fields = state.data.form.fields.filter((f) => f.type === "integer" || f.type === "decimal" || f.type === "range");
-    const sec = $("num-section");
-    if (!fields.length) { sec.innerHTML = ""; return; }
-    const rows = fields.map((f) => {
-      const v = subs.map((s) => parseFloat(s[f.name])).filter((x) => isFinite(x)).sort((a, b) => a - b);
-      if (!v.length) return `<tr><td>${esc(f.label)}</td><td class="num">0</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>`;
-      const sum = v.reduce((a, b) => a + b, 0);
-      const med = v.length % 2 ? v[(v.length - 1) / 2] : (v[v.length / 2 - 1] + v[v.length / 2]) / 2;
-      return `<tr><td>${esc(f.label)}</td><td class="num">${nf.format(v.length)}</td><td class="num">${nf1.format(sum / v.length)}</td>
-        <td class="num">${nf1.format(med)}</td><td class="num">${nf1.format(v[0])}</td><td class="num">${nf1.format(v[v.length - 1])}</td></tr>`;
-    });
-    sec.innerHTML = `<div class="section-title">Questions numériques</div><div class="card"><div class="table-scroll"><table>
-      <thead><tr><th>Question</th><th class="num">Réponses</th><th class="num">Moyenne</th><th class="num">Médiane</th><th class="num">Min</th><th class="num">Max</th></tr></thead>
-      <tbody>${rows.join("")}</tbody></table></div></div>`;
+  // ---------- Tableaux détaillés ----------
+  function yn(s, L, flag, count) {
+    const v = raw(s, L, flag);
+    if (v === "non") return `<span class="muted">Non</span>`;
+    const n = m(s, L, count);
+    return v === "oui" ? (n != null ? nf.format(n) : "Oui") : "—";
+  }
+  function renderDetail() {
+    if (!state.data) return;
+    const L = LEVELS[state.level], latest = latestByUnit(state.level).sort((a, b) => unitName(a, L).localeCompare(unitName(b, L)));
+    const n = (s, k) => { const v = m(s, L, k); return v == null ? "—" : nf.format(v); };
+    const hosp = state.level !== "as";
+    let cols;
+    if (state.tab === "capacite") cols = [
+      ["UTC", (s) => n(s, "nb_utc")], ["CTC", (s) => n(s, "nb_ctc")], ["Salles d'isolement", (s) => n(s, "nb_salles_isolement")],
+      ...(hosp ? [["Lits disponibles", (s) => n(s, "nb_lits_dispo")], ["Lits-types choléra", (s) => n(s, "nb_lits_types_cholera")], ["Lits dédiés", (s) => n(s, "nb_lits_dedies")],
+        ["Internés", (s) => n(s, "nb_patients_internes")], ["Létalité intrahosp.", (s) => { const v = m(s, L, "taux_letalite_intrahosp"); return v == null ? "—" : nf1.format(v) + " %"; }]] : []),
+      ["PRO", (s) => yn(s, L, "pro_disponibles", "nb_pro")],
+    ];
+    else if (state.tab === "rh") cols = hosp ? [
+      ["Médical dispo.", (s) => yn(s, L, "personnel_medical_dispo", "nb_personnel_medical_dispo")],
+      ["Médical dédié", (s) => yn(s, L, "personnel_medical_dedie", "nb_personnel_medical_dedie")],
+      ["Paraméd. dispo.", (s) => yn(s, L, "personnel_parameds_dispo", "nb_personnel_parameds_dispo")],
+      ["Paraméd. dédié", (s) => yn(s, L, "personnel_parameds_dedie", "nb_personnel_parameds_dedie")],
+      ["Paraméd. formés", (s) => yn(s, L, "parameds_formes", "nb_parameds_formes")],
+      ["ASC FOSA dispo.", (s) => yn(s, L, "asc_dispo_fosa", "nb_asc_dispo_fosa")],
+      ["ASC FOSA formés", (s) => yn(s, L, "asc_formes_fosa", "nb_asc_formes_fosa")],
+      ["WASH", (s) => yn(s, L, "personnel_wash_dispo", "nb_personnel_wash")],
+      ["Chimioprophylaxie ASC", (s) => yn(s, L, "chimioprophylaxie_asc", "nb_asc_chimioprophylaxie")],
+    ] : null;
+    else cols = [
+      ["Patients PEC", (s) => n(s, "nb_patients_communaute")], ["Décès", (s) => n(s, "nb_deces_communaute")],
+      ["Létalité", (s) => { const v = m(s, L, "taux_letalite_communaute"); return v == null ? "—" : nf1.format(v) + " %"; }],
+      ["ASC disponibles", (s) => n(s, "nb_asc_dispo_communaute")], ["ASC formés", (s) => n(s, "nb_asc_formes_communaute")],
+      ["PRO fonctionnels", (s) => n(s, "nb_pro_fonctionnels_communaute")],
+      ["Chimioprophylaxie contacts", (s) => { const v = raw(s, L, "chimio_contacts"); return v === "oui" ? badge(STATUS.suffisant).replace("Suffisant", "Oui") : v === "non" ? `<span class="muted">Non</span>` : "—"; }],
+    ];
+    const t = $("detail-table");
+    if (!cols) { t.innerHTML = `<tbody><tr><td class="empty">La fiche Aire de santé ne contient pas de section ressources humaines.</td></tr></tbody>`; return; }
+    if (!latest.length) { t.innerHTML = `<tbody><tr><td class="empty">Aucun rapport pour ce niveau.</td></tr></tbody>`; return; }
+    t.innerHTML = `<thead><tr><th>${L.one[0].toUpperCase() + L.one.slice(1)}</th>${cols.map(([l]) => `<th class="num">${l}</th>`).join("")}<th>Mis à jour</th></tr></thead><tbody>` +
+      latest.map((s) => `<tr><td class="unit">${esc(unitName(s, L))}</td>${cols.map(([, f]) => `<td class="num">${f(s)}</td>`).join("")}<td>${freshness(s)}</td></tr>`).join("") + "</tbody>";
   }
 
-  // ---------- Tableau + export ----------
-  function tableColumns() {
-    return [{ name: "_submission_time", label: "Date", type: "_date" },
-      ...(state.data.submissions.some((s) => s._submitted_by) ? [{ name: "_submitted_by", label: "Enquêteur", type: "text" }] : []),
-      ...state.data.form.fields.filter((f) => f.type !== "geopoint")];
+  // ---------- Rapports + export ----------
+  function reportRows() {
+    let rows = state.data.submissions.filter((s) => !state.region || s.region === state.region)
+      .slice().sort((a, b) => sortKey(b).localeCompare(sortKey(a)));
+    const fmt = (s) => {
+      const k = levelOf(s), L = LEVELS[k];
+      return {
+        date: subDate(s), type: choiceLabel("type_fiche", s.type_fiche), region: choiceLabel("region", s.region),
+        unite: L ? unitName(s, L) : "", cas: L ? num(s[L.cas]) : null, deces: L ? num(s[L.deces]) : null,
+        qualif: choiceLabel("qualification_repondant", s.qualification_repondant), par: s._submitted_by || "",
+      };
+    };
+    rows = rows.map(fmt);
+    if (state.search) rows = rows.filter((r) => Object.values(r).some((v) => String(v ?? "").toLowerCase().includes(state.search)));
+    return rows;
   }
-  function cell(col, s) {
-    if (col.type === "_date") { const d = subDate(s); return d ? d.toLocaleString("fr-FR") : ""; }
-    return displayValue(col, s[col.name]);
-  }
-  function tableRows() {
-    const cols = tableColumns();
-    let rows = filtered().slice().reverse();
-    if (state.search) rows = rows.filter((s) => cols.some((c) => String(cell(c, s)).toLowerCase().includes(state.search)));
-    return { cols, rows };
-  }
-  function renderTable() {
-    const { cols, rows } = tableRows();
-    const shown = rows.slice(0, 200);
-    $("table").innerHTML = rows.length
-      ? `<thead><tr>${cols.map((c) => `<th>${esc(c.label)}</th>`).join("")}</tr></thead><tbody>` +
-        shown.map((s) => `<tr>${cols.map((c) => `<td${["integer", "decimal"].includes(c.type) ? ' class="num"' : ""}>${esc(cell(c, s))}</td>`).join("")}</tr>`).join("") + `</tbody>`
-      : `<tbody><tr><td class="empty">Aucune soumission ne correspond aux filtres.</td></tr></tbody>`;
-    $("table-note").textContent = rows.length > 200 ? `200 soumissions les plus récentes affichées sur ${nf.format(rows.length)} — l'export CSV contient tout.` : "";
+  function renderReports() {
+    const rows = reportRows(), shown = rows.slice(0, 150);
+    $("reports-sub").textContent = `${nf.format(rows.length)} rapport${rows.length > 1 ? "s" : ""}${state.region ? " · " + choiceLabel("region", state.region) : ""}`;
+    $("reports").innerHTML = rows.length ? `<thead><tr><th>Date du recueil</th><th>Fiche</th><th>Région</th><th>Unité</th><th class="num">Cas</th><th class="num">Décès</th><th>Qualification</th><th>Compte Kobo</th></tr></thead><tbody>` +
+      shown.map((r) => `<tr><td>${r.date ? r.date.toLocaleDateString("fr-FR") : "—"}</td><td>${esc(r.type)}</td><td>${esc(r.region)}</td><td class="unit">${esc(r.unite)}</td>
+        <td class="num">${r.cas == null ? "—" : nf.format(r.cas)}</td><td class="num">${r.deces == null ? "—" : nf.format(r.deces)}</td><td>${esc(r.qualif)}</td><td class="muted">${esc(r.par)}</td></tr>`).join("") + "</tbody>"
+      : `<tbody><tr><td class="empty">Aucun rapport.</td></tr></tbody>`;
   }
   function exportCsv() {
-    const { cols, rows } = tableRows();
     const q = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-    const csv = [cols.map((c) => q(c.label)).join(","), ...rows.map((s) => cols.map((c) => q(cell(c, s))).join(","))].join("\n");
+    const head = ["Date du recueil", "Fiche", "Région", "Unité", "Cas", "Décès", "Qualification", "Compte Kobo"];
+    const lines = reportRows().map((r) => [r.date ? r.date.toISOString().slice(0, 10) : "", r.type, r.region, r.unite, r.cas, r.deces, r.qualif, r.par].map(q).join(";"));
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" }));
-    a.download = `kobo-${dayKey(new Date())}.csv`;
+    a.href = URL.createObjectURL(new Blob(["﻿" + [head.map(q).join(";"), ...lines].join("\n")], { type: "text/csv;charset=utf-8" }));
+    a.download = `pec-cholera-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 
   // ---------- Chargement ----------
   fetch("data.json", { cache: "no-store" })
-    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
     .then((data) => {
       state.data = data;
-      document.title = data.form.name || "Dashboard Kobo";
-      $("title").textContent = data.form.name || "Dashboard Kobo";
+      data.form.fields.forEach((f) => { fieldByName[f.name] = f; fieldByName[f.name.split("/").pop()] ??= f; });
+      $("title").textContent = data.form.name || "Prise en charge du choléra";
       const up = data.updated_at ? new Date(data.updated_at).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" }) : "—";
       $("updated").textContent = `Données KoboToolbox · mises à jour le ${up}`;
-      if (data.demo) $("banner").innerHTML = `<div class="banner">Données de démonstration. Ajoute les secrets <b>KOBO_TOKEN</b> et <b>KOBO_ASSET_UID</b> au dépôt puis lance le workflow pour afficher tes vraies données.</div>`;
-      const enums = [...new Set(data.submissions.map((s) => s._submitted_by || "—"))].sort();
-      if (enums.length > 1) {
-        $("enum").innerHTML = `<option value="">Tous les enquêteurs</option>` + enums.map((e) => `<option>${esc(e)}</option>`).join("");
-        $("enum").hidden = false;
-      }
+      if (data.demo) $("banner").innerHTML = `<div class="banner">Données de démonstration fictives. Ajoute les secrets <b>KOBO_TOKEN</b> et <b>KOBO_ASSET_UID</b> au dépôt puis lance le workflow pour afficher les vraies données.</div>`;
+      const regions = [...new Set(data.submissions.map((s) => s.region).filter(Boolean))].sort((a, b) => choiceLabel("region", a).localeCompare(choiceLabel("region", b)));
+      $("region-filter").innerHTML = `<option value="">Toutes les régions</option>` + regions.map((r) => `<option value="${esc(r)}">${esc(choiceLabel("region", r))}</option>`).join("");
+      state.level = ["region", "district", "as"].find((k) => data.submissions.some((s) => levelOf(s) === k)) || "region";
       render();
     })
     .catch((e) => {

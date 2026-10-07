@@ -18,7 +18,7 @@ from pathlib import Path
 SERVER = os.environ.get("KOBO_SERVER", "https://kf.kobotoolbox.org").rstrip("/")
 TOKEN = os.environ.get("KOBO_TOKEN", "").strip()
 ASSET_UID = os.environ.get("KOBO_ASSET_UID", "").strip()
-EXCLUDE = {f.strip() for f in os.environ.get("KOBO_EXCLUDE", "").split(",") if f.strip()}
+EXCLUDE = {f.strip() for f in os.environ.get("KOBO_EXCLUDE", "nom_repondant").split(",") if f.strip()}
 OUT = Path(__file__).resolve().parent.parent / "docs" / "data.json"
 
 # Métadonnées Kobo conservées dans data.json (le reste est retiré)
