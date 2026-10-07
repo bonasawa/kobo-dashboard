@@ -1,0 +1,48 @@
+name: Mise à jour des données Kobo
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # toutes les heures
+  workflow_dispatch:       # bouton "Run workflow" dans l'onglet Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kobo-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer la bibliothèque de chiffrement
+        run: pip install cryptography==43.0.3
+
+      - name: Récupérer les soumissions Kobo
+        env:
+          KOBO_TOKEN: ${{ secrets.KOBO_TOKEN }}
+          KOBO_ASSET_UID: ${{ secrets.KOBO_ASSET_UID }}
+          KOBO_SERVER: ${{ vars.KOBO_SERVER || 'https://kf.kobotoolbox.org' }}
+          KOBO_EXCLUDE: ${{ vars.KOBO_EXCLUDE || 'nom_repondant' }}
+          DASHBOARD_PASSWORD: ${{ secrets.DASHBOARD_PASSWORD }}
+          ALLOW_PUBLIC: ${{ vars.ALLOW_PUBLIC }}
+        run: python scripts/fetch_kobo.py
+
+      - name: Commit si les données ont changé
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data.json
+          if git diff --cached --quiet; then
+            echo "Pas de nouvelles données."
+          else
+            git commit -m "data: mise à jour Kobo $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
