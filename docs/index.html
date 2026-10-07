@@ -181,6 +181,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="auth.js"></script>
 <script>
 (() => {
   // Niveaux de la fiche : chaque soumission décrit UNE unité (région, district ou aire de santé)
@@ -518,15 +519,14 @@
   }
 
   // ---------- Chargement ----------
-  fetch("data.json", { cache: "no-store" })
-    .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  loadDashboardData()
     .then((data) => {
       state.data = data;
       data.form.fields.forEach((f) => { fieldByName[f.name] = f; fieldByName[f.name.split("/").pop()] ??= f; });
       $("title").textContent = data.form.name || "Prise en charge du choléra";
       const up = data.updated_at ? new Date(data.updated_at).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" }) : "—";
       $("updated").textContent = `Données KoboToolbox · mises à jour le ${up}`;
-      if (data.demo) $("banner").innerHTML = `<div class="banner">Données de démonstration fictives. Ajoute les secrets <b>KOBO_TOKEN</b> et <b>KOBO_ASSET_UID</b> au dépôt puis lance le workflow pour afficher les vraies données.</div>`;
+      if (data.demo) $("banner").innerHTML = `<div class="banner">Données de démonstration fictives. Ajoute les secrets <b>KOBO_TOKEN</b> et <b>DASHBOARD_PASSWORD</b> au dépôt puis lance le workflow pour afficher les vraies données.</div>`;
       const regions = [...new Set(data.submissions.map((s) => s.region).filter(Boolean))].sort((a, b) => choiceLabel("region", a).localeCompare(choiceLabel("region", b)));
       $("region-filter").innerHTML = `<option value="">Toutes les régions</option>` + regions.map((r) => `<option value="${esc(r)}">${esc(choiceLabel("region", r))}</option>`).join("");
       state.level = ["region", "district", "as"].find((k) => data.submissions.some((s) => levelOf(s) === k)) || "region";
