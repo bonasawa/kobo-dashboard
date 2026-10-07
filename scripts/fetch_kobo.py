@@ -16,12 +16,16 @@ import hashlib
 import json
 import os
 import sys
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
 SERVER = os.environ.get("KOBO_SERVER", "https://kf.kobotoolbox.org").rstrip("/")
-TOKEN = os.environ.get("KOBO_TOKEN", "").strip()
+# Tolère les erreurs de copier-coller : espaces, guillemets, préfixe "Token "
+TOKEN = os.environ.get("KOBO_TOKEN", "").strip().strip('"\'').strip()
+if TOKEN.lower().startswith("token "):
+    TOKEN = TOKEN[6:].strip()
 ASSET_UID = os.environ.get("KOBO_ASSET_UID", "").strip()
 EXCLUDE = {f.strip() for f in os.environ.get("KOBO_EXCLUDE", "nom_repondant").split(",") if f.strip()}
 PASSWORD = os.environ.get("DASHBOARD_PASSWORD", "")
@@ -38,8 +42,19 @@ SKIP_TYPES = {"begin_group", "end_group", "begin_repeat", "end_repeat", "note",
 def get(url):
     req = urllib.request.Request(url, headers={"Authorization": f"Token {TOKEN}",
                                                "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.load(r)
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return json.load(r)
+    except urllib.error.HTTPError as e:
+        hints = {
+            401: f"token refusé par {SERVER}. Vérifie le secret KOBO_TOKEN (KoboToolbox → Account "
+                 "Settings → Security → API Key : 40 caractères hexadécimaux, sans « Token »), et que "
+                 "le compte est bien sur ce serveur (sinon définis la variable KOBO_SERVER).",
+            403: "le compte du token n'a pas accès à ce formulaire (droit « Voir les soumissions » requis).",
+            404: "formulaire introuvable : vérifie KOBO_ASSET_UID et que le token appartient au "
+                 "propriétaire du formulaire ou à un compte avec qui il est partagé.",
+        }
+        sys.exit(f"Erreur API Kobo HTTP {e.code} : {hints.get(e.code, e.reason)}")
 
 
 def first_label(label, fallback):
@@ -130,6 +145,7 @@ def clean(sub, field_names):
 
 
 def main():
+    print(f"Serveur : {SERVER} · token : {len(TOKEN)} caractères")
     if not TOKEN or not ASSET_UID:
         sys.exit("KOBO_TOKEN et KOBO_ASSET_UID doivent être définis.")
     if not PASSWORD and not ALLOW_PUBLIC:
