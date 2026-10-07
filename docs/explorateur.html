@@ -423,6 +423,8 @@
   // ---------- Chargement ----------
   loadDashboardData()
     .then((data) => {
+      // Les tables de répétition (structures UTC/CTC/salles) sont exploitées dans le tableau de bord principal
+      data.form.fields = data.form.fields.filter((f) => !f.repeat && f.type !== "repeat");
       state.data = data;
       document.title = data.form.name || "Dashboard Kobo";
       $("title").textContent = data.form.name || "Dashboard Kobo";

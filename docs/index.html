@@ -13,6 +13,7 @@
     --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #7a7973;
     --accent: #2a78d6; --accent-soft: #cde2fb;
     --series-1: #2a78d6; --series-2: #eb6834; --series-1-fill: rgba(42,120,214,.10);
+    --sev-1: #86b6ef; --sev-2: #3987e5; --sev-3: #1c5cab; --sev-4: #0d366b;
     --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
     --good-ink: #006300; --warning-ink: #7a5200; --serious-ink: #9a3a12; --critical-ink: #a32424;
     --badge-alpha: .14;
@@ -24,6 +25,7 @@
       --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8f8e86;
       --accent: #3987e5; --accent-soft: #184f95;
       --series-1: #3987e5; --series-2: #d95926; --series-1-fill: rgba(57,135,229,.16);
+      --sev-1: #b7d3f6; --sev-2: #6da7ec; --sev-3: #2a78d6; --sev-4: #184f95;
       --good-ink: #5fd35f; --warning-ink: #fab219; --serious-ink: #f2a07f; --critical-ink: #f08080;
       --badge-alpha: .22;
     }
@@ -34,6 +36,7 @@
     --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8f8e86;
     --accent: #3987e5; --accent-soft: #184f95;
     --series-1: #3987e5; --series-2: #d95926; --series-1-fill: rgba(57,135,229,.16);
+    --sev-1: #b7d3f6; --sev-2: #6da7ec; --sev-3: #2a78d6; --sev-4: #184f95;
     --good-ink: #5fd35f; --warning-ink: #fab219; --serious-ink: #f2a07f; --critical-ink: #f08080;
     --badge-alpha: .22;
   }
@@ -56,6 +59,8 @@
   select, input[type=search] { font: inherit; font-size: 13px; color: var(--text-primary); background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; min-width: 0; }
   .btn { font: inherit; font-size: 13px; color: var(--text-primary); background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; cursor: pointer; text-decoration: none; display: inline-block; }
   .btn:hover, .seg button:not([aria-pressed="true"]):not(:disabled):hover { background: var(--grid); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .btn.primary:hover { filter: brightness(1.08); background: var(--accent); }
 
   .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
   .kpi, .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; }
@@ -68,14 +73,20 @@
   .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; margin-bottom: 16px; }
   .grid2 .card { margin-bottom: 0; }
   .chart-box { position: relative; height: 280px; }
-  .legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .legend i.dash { width: 14px; height: 0; border-top: 2px dashed var(--text-secondary); border-radius: 0; vertical-align: 3px; }
+
+  .messages { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .messages li { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; line-height: 1.5; }
+  .messages .badge { flex: none; margin-top: 1px; }
 
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
   th { color: var(--text-secondary); font-weight: 600; position: sticky; top: 0; background: var(--surface-1); z-index: 1; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   td.unit { font-weight: 500; }
+  td.wrap { white-space: normal; min-width: 260px; }
   .muted { color: var(--text-muted); font-size: 12px; }
   .stale { color: var(--serious-ink); }
   .table-scroll { overflow: auto; max-height: 520px; }
@@ -83,7 +94,7 @@
   .tabs button { border: 0; background: none; font: inherit; font-size: 13px; color: var(--text-secondary); padding: 8px 12px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
   .tabs button[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--accent); font-weight: 600; }
 
-  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 999px; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
   .badge .ic { font-size: 11px; line-height: 1; }
   .b-good { color: var(--good-ink); background: color-mix(in srgb, var(--good) calc(var(--badge-alpha) * 100%), transparent); }
   .b-warning { color: var(--warning-ink); background: color-mix(in srgb, var(--warning) calc(var(--badge-alpha) * 100%), transparent); }
@@ -95,7 +106,6 @@
 
   .empty { color: var(--text-muted); text-align: center; padding: 40px 16px; }
   .banner { background: var(--accent-soft); color: var(--text-primary); border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px; }
-  .note { color: var(--text-muted); font-size: 12px; margin-top: 10px; }
   @media (max-width: 420px) { .grid2 { grid-template-columns: 1fr; } .kpi .value { font-size: 24px; } .kpis { grid-template-columns: 1fr 1fr; } }
 </style>
 </head>
@@ -107,6 +117,7 @@
       <div class="sub" id="updated">Chargement des données…</div>
     </div>
     <div class="actions">
+      <button class="btn primary" id="report-btn" type="button" disabled>Générer le rapport de situation</button>
       <a class="btn" href="explorateur.html">Explorer toutes les réponses</a>
       <button class="btn" id="theme" type="button" aria-label="Changer de thème">Thème</button>
     </div>
@@ -125,6 +136,12 @@
 
   <div class="kpis" id="kpis"></div>
 
+  <div class="card">
+    <h2>Messages clés</h2>
+    <div class="card-sub">Générés automatiquement à partir du dernier rapport de chaque unité</div>
+    <ul class="messages" id="messages"></ul>
+  </div>
+
   <div class="grid2">
     <div class="card">
       <h2>Évolution des cas et décès cumulés</h2>
@@ -134,29 +151,44 @@
     </div>
     <div class="card">
       <h2 id="bars-title">Cas et décès par unité</h2>
-      <div class="card-sub">Dernier rapport de chaque unité · survoler pour la létalité</div>
+      <div class="card-sub">Dernier rapport de chaque unité</div>
       <div class="legend"><span><i style="background:var(--series-1)"></i>Cas</span><span><i style="background:var(--series-2)"></i>Décès</span></div>
       <div class="chart-box" id="bars-box"><canvas id="bars" role="img" aria-label="Cas et décès par unité"></canvas></div>
     </div>
   </div>
 
-  <div class="card" id="stock-card">
+  <div class="grid2">
+    <div class="card">
+      <h2>Létalité par site</h2>
+      <div class="card-sub">Recalculée (décès / cas), comparée au seuil OMS</div>
+      <div class="legend"><span><i style="background:var(--critical)"></i>Au-dessus du seuil</span><span><i style="background:var(--series-1)"></i>Sous le seuil</span><span><i class="dash"></i>Seuil OMS 1 %</span></div>
+      <div class="chart-box" id="let-box"><canvas id="letalite" role="img" aria-label="Létalité par site"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Gravité à l'admission</h2>
+      <div class="card-sub">Répartition des patients classés (% sévères entre parenthèses)</div>
+      <div class="legend" id="sev-legend"></div>
+      <div class="chart-box" id="sev-box"><canvas id="severity" role="img" aria-label="Gravité à l'admission par site"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
     <h2>État des stocks</h2>
-    <div class="card-sub">Dernier rapport de chaque unité · quantité en cartons ou unités entre parenthèses</div>
+    <div class="card-sub" id="stock-sub"></div>
     <div class="stock-legend" id="stock-legend"></div>
     <div class="table-scroll"><table id="stock-table"></table></div>
   </div>
 
-  <div class="grid2" id="severity-row">
-    <div class="card">
-      <h2>État des patients à l'arrivée</h2>
-      <div class="card-sub">Cumul des derniers rapports</div>
-      <div class="chart-box" style="height:220px"><canvas id="severity" role="img" aria-label="État des patients à l'arrivée"></canvas></div>
-    </div>
+  <div class="grid2">
     <div class="card">
       <h2>Occupation des lits dédiés</h2>
       <div class="card-sub">Patients internés / lits dédiés au choléra</div>
-      <div class="chart-box" style="height:220px" id="occ-box"><canvas id="occupation" role="img" aria-label="Occupation des lits"></canvas></div>
+      <div class="chart-box" id="occ-box"><canvas id="occupation" role="img" aria-label="Occupation des lits"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Décès hors structure</h2>
+      <div class="card-sub">Décès communautaires déclarés · survoler pour la prise en charge communautaire</div>
+      <div class="chart-box" id="comm-box"><canvas id="commdeaths" role="img" aria-label="Décès communautaires par site"></canvas></div>
     </div>
   </div>
 
@@ -170,10 +202,16 @@
   </div>
 
   <div class="card">
+    <h2>Qualité et cohérence des données</h2>
+    <div class="card-sub" id="quality-sub"></div>
+    <div class="table-scroll"><table id="quality"></table></div>
+  </div>
+
+  <div class="card">
     <h2>Derniers rapports reçus</h2>
     <div class="card-sub" id="reports-sub"></div>
     <div class="actions" style="margin-bottom:12px">
-      <input type="search" id="search" placeholder="Rechercher une unité, un enquêteur…" aria-label="Rechercher" style="flex:1 1 200px">
+      <input type="search" id="search" placeholder="Rechercher une unité, un compte…" aria-label="Rechercher" style="flex:1 1 200px">
       <button class="btn" id="csv" type="button">Exporter CSV</button>
     </div>
     <div class="table-scroll"><table id="reports"></table></div>
@@ -182,65 +220,18 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="auth.js"></script>
+<script src="analyse.js"></script>
+<script src="rapport.js"></script>
 <script>
 (() => {
-  // Niveaux de la fiche : chaque soumission décrit UNE unité (région, district ou aire de santé)
-  // avec des chiffres cumulés « à date ». La situation actuelle = dernier rapport de chaque unité.
-  const LEVELS = {
-    region:   { fiche: "cerple_region", unit: "region",         label: "Régions",        one: "région",        cas: "nb_cas_region",   deces: "nb_deces_region",   grp: "fiche_region/",   sfx: "_region" },
-    district: { fiche: "chef_district", unit: "district_sante", label: "Districts",      one: "district",      cas: "nb_cas_district", deces: "nb_deces_district", grp: "fiche_district/", sfx: "_district" },
-    as:       { fiche: "chef_as",       unit: "aire_sante",     label: "Aires de santé", one: "aire de santé", cas: "nb_cas_as",       deces: "nb_deces_as",       grp: "fiche_as/",       sfx: "_as" },
-  };
-  const STOCKS = [["ringer", "Ringer Lactate"], ["serum", "Sérum salé 0,9 %"], ["sro", "SRO"], ["chlore", "Chlore"], ["epi", "Kits EPI"]];
-  const STATUS = {
-    suffisant:    ["good", "✓", "Suffisant"],
-    modere:       ["warning", "!", "Modéré"],
-    sous_tension: ["serious", "▲", "Sous tension"],
-    insuffisant:  ["critical", "✕", "Insuffisant"],
-    rupture:      ["critical", "✕", "Rupture"],
-  };
-  const STALE_DAYS = 7;
-
-  const state = { data: null, level: "region", region: "", tab: "capacite", search: "" };
+  const P = window.PEC;
+  const { LEVELS, STOCKS, STATUS, SEVERITY, RH, nf, nf1, num, esc, fmtPct } = P;
+  const state = { level: "region", region: "", tab: "capacite", search: "" };
   const charts = [];
-  const nf = new Intl.NumberFormat("fr-FR");
-  const nf1 = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
   const $ = (id) => document.getElementById(id);
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const num = (v) => { const n = parseFloat(v); return isFinite(n) ? n : null; };
-  const sum = (arr) => arr.reduce((a, b) => a + (b || 0), 0);
-  const pct = (a, b) => (b ? (a / b) * 100 : null);
-
-  // ---------- Accès aux données ----------
-  const fieldByName = {};
-  function choiceLabel(name, value) {
-    const f = fieldByName[name];
-    const c = f && (f.choices || []).find((c) => c.name === value);
-    return c ? c.label : (value ?? "");
-  }
-  function subDate(s) {
-    if (s.date_recueil) return new Date(String(s.date_recueil).slice(0, 10) + "T12:00:00Z");
-    if (s._submission_time) return new Date(s._submission_time.endsWith("Z") ? s._submission_time : s._submission_time + "Z");
-    return null;
-  }
-  const sortKey = (s) => `${subDate(s)?.toISOString() || ""}|${s._submission_time || ""}`;
-  const levelOf = (s) => Object.keys(LEVELS).find((k) => LEVELS[k].fiche === s.type_fiche);
-  const m = (s, L, key) => num(s[L.grp + key + L.sfx]);      // champ de groupe (ex. fiche_region/nb_lits_dispo_region)
-  const raw = (s, L, key) => s[L.grp + key + L.sfx];
-  const unitName = (s, L) => choiceLabel(L.unit, s[L.unit]) || "—";
-
-  function reportsOf(levelKey) {
-    return state.data.submissions
-      .filter((s) => levelOf(s) === levelKey && s[LEVELS[levelKey].unit])
-      .filter((s) => !state.region || s.region === state.region)
-      .sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
-  }
-  function latestByUnit(levelKey, until) {
-    const L = LEVELS[levelKey], map = new Map();
-    reportsOf(levelKey).forEach((s) => { if (!until || subDate(s) <= until) map.set(s[L.unit], s); });
-    return [...map.values()];
-  }
+  const NS = `<span class="muted">non saisi</span>`;
+  const n = (v) => (v == null ? NS : nf.format(v));
 
   // ---------- Thème ----------
   try { const t = localStorage.getItem("kobo-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
@@ -254,20 +245,19 @@
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
 
   // ---------- Filtres ----------
-  $("level").addEventListener("click", (e) => {
-    const b = e.target.closest("button"); if (!b || b.disabled) return;
-    state.level = b.dataset.level; render();
-  });
+  $("level").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.disabled) return; state.level = b.dataset.level; render(); });
   $("region-filter").addEventListener("change", (e) => { state.region = e.target.value; render(); });
   $("tabs").addEventListener("click", (e) => {
     const b = e.target.closest("button"); if (!b) return;
     state.tab = b.dataset.tab;
     $("tabs").querySelectorAll("button").forEach((x) => x.setAttribute("aria-selected", x === b));
-    renderDetail();
+    renderDetail(P.records(state.level, state.region));
   });
   $("search").addEventListener("input", (e) => { state.search = e.target.value.toLowerCase(); renderReports(); });
   $("csv").addEventListener("click", exportCsv);
+  $("report-btn").addEventListener("click", () => window.genererRapport({ level: state.level, region: state.region }));
 
+  // ---------- Chart.js ----------
   function chartDefaults() {
     Chart.defaults.font.family = "Inter, system-ui, sans-serif";
     Chart.defaults.font.size = 12;
@@ -279,238 +269,287 @@
     });
     Chart.defaults.plugins.legend.display = false;
   }
+  // Étiquette de valeur au bout de chaque barre (graphiques à une seule série)
+  const valueLabels = { id: "valueLabels", afterDatasetsDraw(chart, args, opts) {
+    if (!opts || !opts.format) return;
+    const { ctx } = chart; ctx.save();
+    ctx.font = "500 11px Inter, system-ui, sans-serif"; ctx.fillStyle = css("--text-secondary"); ctx.textBaseline = "middle";
+    chart.getDatasetMeta(0).data.forEach((bar, i) => { const t = opts.format(i); if (t) ctx.fillText(t, bar.x + 6, bar.y); });
+    ctx.restore();
+  } };
+  // Ligne verticale de référence (seuil OMS)
+  const threshold = { id: "threshold", afterDatasetsDraw(chart, args, opts) {
+    if (!opts || opts.value == null) return;
+    const { ctx, chartArea: a } = chart, x = chart.scales.x.getPixelForValue(opts.value);
+    ctx.save(); ctx.strokeStyle = css("--text-secondary"); ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(x, a.top); ctx.lineTo(x, a.bottom); ctx.stroke();
+    ctx.setLineDash([]); ctx.font = "500 11px Inter, system-ui, sans-serif"; ctx.fillStyle = css("--text-secondary"); ctx.textAlign = "left";
+    ctx.fillText(opts.label, x + 4, a.top - 6); ctx.restore();
+  } };
+  const hbar = (extra = {}) => ({
+    indexAxis: "y", responsive: true, maintainAspectRatio: false,
+    scales: { x: { beginAtZero: true, border: { display: false }, ...extra.x }, y: { grid: { display: false }, ticks: { color: css("--text-primary") } } },
+    layout: { padding: { right: extra.padRight ?? 8, top: extra.padTop ?? 0 } },
+  });
+  const boxHeight = (id, rows, per = 34, min = 200) => { $(id).style.height = Math.max(min, rows * per + 50) + "px"; };
 
   // ---------- Rendu ----------
   function render() {
-    if (!state.data) return;
+    if (!P.data) return;
     $("level").querySelectorAll("button").forEach((b) => {
       b.setAttribute("aria-pressed", b.dataset.level === state.level);
-      b.disabled = !state.data.submissions.some((s) => levelOf(s) === b.dataset.level);
+      b.disabled = !P.data.submissions.some((s) => P.levelOf(s) === b.dataset.level);
     });
     charts.splice(0).forEach((c) => c.destroy());
     chartDefaults();
     const L = LEVELS[state.level];
-    const latest = latestByUnit(state.level);
-    renderKpis(L, latest);
+    const recs = P.records(state.level, state.region);
+    renderKpis(L, recs);
+    renderMessages(L, recs);
     renderEvolution(L);
-    renderBars(L, latest);
-    renderStocks(L, latest);
-    renderSeverity(L, latest);
-    renderDetail();
+    renderBars(L, recs);
+    renderLetalite(recs);
+    renderSeverity(recs);
+    renderStocks(L, recs);
+    renderOccupation(recs);
+    renderCommDeaths(recs);
+    renderDetail(recs);
+    renderQuality(recs);
     renderReports();
   }
 
-  function daysAgo(d) { return d ? Math.floor((Date.now() - d) / 864e5) : null; }
-  function freshness(s) {
-    const d = subDate(s), n = daysAgo(d);
-    const txt = d ? d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "—";
-    return n != null && n > STALE_DAYS ? `<span class="stale" title="Rapport de plus de ${STALE_DAYS} jours">${txt} · ${n} j</span>` : `<span class="muted">${txt}</span>`;
+  function freshness(d) {
+    const k = P.daysAgo(d), txt = d ? d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "—";
+    return k != null && k > P.STALE_DAYS ? `<span class="stale" title="Rapport de plus de ${P.STALE_DAYS} jours">${txt} · ${k} j</span>` : `<span class="muted">${txt}</span>`;
   }
+  const badge = (st) => st ? `<span class="badge b-${st[0]}">${st[1] ? `<span class="ic" aria-hidden="true">${st[1]}</span>` : ""}${st[2]}</span>` : `<span class="b-none">—</span>`;
+  const SEV_BADGE = { critical: ["critical", "✕", "Alerte"], serious: ["serious", "▲", "Attention"], warning: ["warning", "!", "À suivre"], good: ["good", "✓", "OK"] };
+  const Q_BADGE = { critical: ["critical", "✕", "Incohérence"], serious: ["serious", "▲", "À vérifier"], warning: ["warning", "!", "Incomplet"] };
 
-  function renderKpis(L, latest) {
-    const cas = sum(latest.map((s) => num(s[L.cas])));
-    const deces = sum(latest.map((s) => num(s[L.deces])));
-    const let_ = pct(deces, cas);
-    const hasHosp = state.level !== "as";
-    const internes = hasHosp ? sum(latest.map((s) => m(s, L, "nb_patients_internes"))) : null;
-    const gueris = hasHosp ? sum(latest.map((s) => m(s, L, "nb_patients_gueris"))) : null;
-    const total = state.level === "region" && !state.region ? (fieldByName.region?.choices || []).length : null;
-    const stale = latest.filter((s) => daysAgo(subDate(s)) > STALE_DAYS).length;
-    const alerts = state.level === "as" ? null : latest.reduce((n, s) => n + STOCKS.filter(([k]) => ["critical"].includes(stockStatus(s, L, k)?.[0])).length, 0);
+  function renderKpis(L, recs) {
+    const t = P.totals(recs);
+    const total = state.level === "region" && !state.region ? (P.data.form.fields.find((f) => f.name === "region")?.choices || []).length : null;
+    const stale = recs.filter((r) => P.daysAgo(r.date) > P.STALE_DAYS).length;
+    const valid = recs.filter((r) => r.validated).length;
+    const iv = recs.filter(P.ivRupture).length;
     const tiles = [
-      ["Cas cumulés", nf.format(cas), `somme des ${latest.length} ${L.label.toLowerCase()}`],
-      ["Décès cumulés", nf.format(deces), "à date"],
-      ["Létalité", let_ == null ? "—" : nf1.format(let_) + " %", "décès / cas"],
-      ...(hasHosp ? [["Patients internés", nf.format(internes), "actuellement"], ["Patients guéris", nf.format(gueris), "à date"]] : []),
-      [`${L.label} rapportant`, total ? `${latest.length}/${total}` : nf.format(latest.length), stale ? `${stale} rapport${stale > 1 ? "s" : ""} de + de ${STALE_DAYS} j` : "rapports à jour"],
-      ...(alerts != null ? [["Alertes stocks", nf.format(alerts), "produits en rupture ou insuffisants"]] : []),
+      ["Cas cumulés", nf.format(t.cas), recs.length > 1 ? `somme des ${recs.length} ${L.label.toLowerCase()}` : `${recs.length} ${L.one}`],
+      ["Décès cumulés", nf.format(t.deces), "à date"],
+      ["Létalité", t.letalite == null ? "—" : fmtPct(t.letalite), t.letalite == null ? "décès / cas" : t.letalite > P.SEUIL_OMS ? badge(["critical", "▲", "au-dessus du seuil OMS 1 %"]) : badge(["good", "✓", "sous le seuil OMS 1 %"])],
+      ["Patients internés", t.internes == null ? "—" : nf.format(t.internes), "actuellement"],
+      ["Patients guéris", t.gueris == null ? "—" : nf.format(t.gueris), "à date"],
+      [`${L.label} rapportant`, total ? `${recs.length}/${total}` : nf.format(recs.length), stale ? `${stale} rapport${stale > 1 ? "s" : ""} de + de ${P.STALE_DAYS} j` : "rapports à jour"],
+      ["Rupture IV", nf.format(iv), "sites sans Ringer ni sérum salé"],
+      ["Fiches validées", `${valid}/${recs.length}`, "statut « Approuvé » KoboToolbox"],
     ];
     $("kpis").innerHTML = tiles.map(([l, v, h]) => `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="hint">${h}</div></div>`).join("");
   }
 
+  function renderMessages(L, recs) {
+    const msgs = P.keyMessages(recs, L);
+    $("messages").innerHTML = msgs.length ? msgs.map((m) => `<li>${badge(SEV_BADGE[m.sev])}<span>${esc(m.text)}</span></li>`).join("")
+      : `<li class="muted">Aucun rapport pour ce niveau.</li>`;
+  }
+
   function renderEvolution(L) {
-    const reports = reportsOf(state.level);
-    const days = [...new Set(reports.map((s) => subDate(s)?.toISOString().slice(0, 10)).filter(Boolean))].sort();
-    // À chaque date : somme du dernier chiffre connu de chaque unité
+    const reports = P.reportsOf(state.level, state.region);
+    const day = (s) => P.subDate(s)?.toISOString().slice(0, 10);
+    const days = [...new Set(reports.map(day).filter(Boolean))].sort();
     const last = new Map(); let i = 0;
     const cas = [], deces = [];
     days.forEach((d) => {
-      for (; i < reports.length && subDate(reports[i]).toISOString().slice(0, 10) <= d; i++) last.set(reports[i][L.unit], reports[i]);
-      cas.push(sum([...last.values()].map((s) => num(s[L.cas]))));
-      deces.push(sum([...last.values()].map((s) => num(s[L.deces]))));
+      for (; i < reports.length && day(reports[i]) <= d; i++) last.set(reports[i][L.unit], reports[i]);
+      cas.push(P.sum([...last.values()].map((s) => num(s[L.cas]))));
+      deces.push(P.sum([...last.values()].map((s) => num(s[L.deces]))));
     });
     $("evo-sub").textContent = `Somme des derniers chiffres connus de chaque ${L.one}, par date de recueil`;
     const fmt = (k) => new Date(k + "T12:00:00Z").toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
-    const ds = (data, color, fill) => ({ data, borderColor: css(color), backgroundColor: fill ? css("--series-1-fill") : css(color), fill, borderWidth: 2, tension: 0,
+    const ds = (label, data, color, fill) => ({ label, data, borderColor: css(color), backgroundColor: fill ? css("--series-1-fill") : css(color), fill, borderWidth: 2, tension: 0,
       pointRadius: days.length > 30 ? 0 : 3, pointHoverRadius: 5, pointBackgroundColor: css(color), pointBorderColor: css("--surface-1"), pointBorderWidth: 2 });
     charts.push(new Chart($("evo"), {
       type: "line",
-      data: { labels: days, datasets: [{ label: "Cas", ...ds(cas, "--series-1", true) }, { label: "Décès", ...ds(deces, "--series-2", false) }] },
+      data: { labels: days, datasets: [ds("Cas", cas, "--series-1", true), ds("Décès", deces, "--series-2", false)] },
       options: {
         responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
-        scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 7, callback: (v, j) => fmt(days[j]) } },
-                  y: { beginAtZero: true, ticks: { precision: 0 }, border: { display: false } } },
+        scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 7, callback: (v, j) => fmt(days[j]) } }, y: { beginAtZero: true, ticks: { precision: 0 }, border: { display: false } } },
         plugins: { tooltip: { callbacks: {
           title: (it) => fmt(days[it[0].dataIndex]),
           label: (it) => ` ${it.dataset.label} : ${nf.format(it.parsed.y)}`,
-          afterBody: (it) => { const l = pct(deces[it[0].dataIndex], cas[it[0].dataIndex]); return l == null ? "" : `Létalité : ${nf1.format(l)} %`; },
+          afterBody: (it) => { const l = P.pct(deces[it[0].dataIndex], cas[it[0].dataIndex]); return l == null ? "" : `Létalité : ${fmtPct(l)}`; },
         } } },
       },
     }));
   }
 
-  function renderBars(L, latest) {
-    const rows = latest.map((s) => ({ name: unitName(s, L), cas: num(s[L.cas]) || 0, deces: num(s[L.deces]) || 0 }))
-      .sort((a, b) => b.cas - a.cas);
+  function renderBars(L, recs) {
+    const rows = recs.filter((r) => r.cas != null).sort((a, b) => b.cas - a.cas);
     $("bars-title").textContent = `Cas et décès par ${L.one}`;
-    $("bars-box").style.height = Math.max(200, rows.length * 44 + 40) + "px";
+    boxHeight("bars-box", rows.length, 44);
+    const bar = (label, data, color) => ({ label, data, backgroundColor: css(color), borderRadius: 4, borderSkipped: "start", barThickness: 14, categoryPercentage: .8 });
     charts.push(new Chart($("bars"), {
       type: "bar",
-      data: { labels: rows.map((r) => r.name), datasets: [
-        { label: "Cas", data: rows.map((r) => r.cas), backgroundColor: css("--series-1"), borderRadius: 4, borderSkipped: "start", barThickness: 14, categoryPercentage: .8 },
-        { label: "Décès", data: rows.map((r) => r.deces), backgroundColor: css("--series-2"), borderRadius: 4, borderSkipped: "start", barThickness: 14, categoryPercentage: .8 },
-      ] },
-      options: {
-        indexAxis: "y", responsive: true, maintainAspectRatio: false, interaction: { mode: "index", axis: "y", intersect: false },
-        scales: { x: { beginAtZero: true, ticks: { precision: 0 }, border: { display: false } },
-                  y: { grid: { display: false }, ticks: { color: css("--text-primary") } } },
-        plugins: { tooltip: { callbacks: {
-          label: (it) => ` ${it.dataset.label} : ${nf.format(it.parsed.x)}`,
-          afterBody: (it) => { const r = rows[it[0].dataIndex], l = pct(r.deces, r.cas); return l == null ? "" : `Létalité : ${nf1.format(l)} %`; },
-        } } },
-      },
+      data: { labels: rows.map((r) => r.unit), datasets: [bar("Cas", rows.map((r) => r.cas), "--series-1"), bar("Décès", rows.map((r) => r.deces || 0), "--series-2")] },
+      options: { ...hbar({ x: { ticks: { precision: 0 } } }), interaction: { mode: "index", axis: "y", intersect: false },
+        plugins: { tooltip: { callbacks: { label: (it) => ` ${it.dataset.label} : ${nf.format(it.parsed.x)}`, afterBody: (it) => `Létalité : ${fmtPct(rows[it[0].dataIndex].letalite)}` } } } },
     }));
   }
 
-  function stockStatus(s, L, key) {
-    const dispo = raw(s, L, `stock_${key}`);
-    if (dispo === "non") return STATUS.rupture;
-    if (dispo === "oui") return STATUS[raw(s, L, `etat_stock_${key}`)] || ["none", "", "Disponible"];
-    return null;
-  }
-  const badge = (st) => st ? `<span class="badge b-${st[0]}">${st[1] ? `<span class="ic" aria-hidden="true">${st[1]}</span>` : ""}${st[2]}</span>` : `<span class="b-none">—</span>`;
-
-  function renderStocks(L, latest) {
-    const show = state.level !== "as";
-    $("stock-card").hidden = !show;
-    if (!show) return;
-    $("stock-legend").innerHTML = ["suffisant", "modere", "sous_tension", "insuffisant", "rupture"].map((k) => badge(STATUS[k])).join("");
-    const rank = { critical: 0, serious: 1, warning: 2, good: 3, none: 4 };
-    const rows = latest.map((s) => ({ s, worst: Math.min(...STOCKS.map(([k]) => rank[stockStatus(s, L, k)?.[0]] ?? 5)) }))
-      .sort((a, b) => a.worst - b.worst || unitName(a.s, L).localeCompare(unitName(b.s, L)));
-    $("stock-table").innerHTML = rows.length ? `<thead><tr><th>${L.one[0].toUpperCase() + L.one.slice(1)}</th>${STOCKS.map(([, l]) => `<th>${l}</th>`).join("")}<th>Mis à jour</th></tr></thead><tbody>` +
-      rows.map(({ s }) => `<tr><td class="unit">${esc(unitName(s, L))}</td>${STOCKS.map(([k]) => {
-        const q = m(s, L, `qte_stock_${k}`);
-        return `<td>${badge(stockStatus(s, L, k))}${q != null && raw(s, L, `stock_${k}`) === "oui" ? `<span class="qty">(${nf.format(q)})</span>` : ""}</td>`;
-      }).join("")}<td>${freshness(s)}</td></tr>`).join("") + "</tbody>"
-      : `<tbody><tr><td class="empty">Aucun rapport pour ce niveau.</td></tr></tbody>`;
+  function renderLetalite(recs) {
+    const rows = recs.filter((r) => r.letalite != null).sort((a, b) => b.letalite - a.letalite);
+    boxHeight("let-box", rows.length, 34);
+    const max = Math.max(P.SEUIL_OMS * 2, ...rows.map((r) => r.letalite));
+    charts.push(new Chart($("letalite"), {
+      type: "bar",
+      plugins: [valueLabels, threshold],
+      data: { labels: rows.map((r) => r.unit), datasets: [{ data: rows.map((r) => r.letalite), backgroundColor: rows.map((r) => css(r.letalite > P.SEUIL_OMS ? "--critical" : "--series-1")), borderRadius: 4, borderSkipped: "start", barThickness: 16 }] },
+      options: { ...hbar({ x: { suggestedMax: max * 1.15, ticks: { callback: (v) => v + " %" } }, padRight: 44, padTop: 16 }),
+        plugins: {
+          valueLabels: { format: (i) => fmtPct(rows[i].letalite) },
+          threshold: { value: P.SEUIL_OMS, label: "Seuil OMS 1 %" },
+          tooltip: { displayColors: false, callbacks: { label: (it) => { const r = rows[it.dataIndex]; return [`${nf.format(r.deces || 0)} décès / ${nf.format(r.cas)} cas`, r.letalite > P.SEUIL_OMS ? "Au-dessus du seuil OMS" : "Sous le seuil OMS"]; } } },
+        } },
+    }));
   }
 
-  function renderSeverity(L, latest) {
-    const show = state.level !== "as";
-    $("severity-row").hidden = !show;
-    if (!show) return;
-    const cats = [["nb_deshydrat_legere", "Déshydratation légère"], ["nb_deshydrat_moderee", "Déshydratation modérée"], ["nb_deshydrat_severe", "Déshydratation sévère"], ["nb_arrives_decedes", "Arrivés décédés"]];
-    const vals = cats.map(([k]) => sum(latest.map((s) => m(s, L, k))));
-    const tot = sum(vals);
+  function renderSeverity(recs) {
+    const colors = ["--sev-1", "--sev-2", "--sev-3", "--sev-4"].map(css);
+    $("sev-legend").innerHTML = SEVERITY.map(([, l], i) => `<span><i style="background:${colors[i]}"></i>${l}</span>`).join("");
+    const rows = recs.map((r) => ({ r, s: P.severity(r) })).filter((x) => x.s.classes).sort((a, b) => b.s.pctSevere - a.s.pctSevere);
+    boxHeight("sev-box", rows.length, 34);
     charts.push(new Chart($("severity"), {
       type: "bar",
-      data: { labels: cats.map(([, l]) => l), datasets: [{ data: vals, backgroundColor: css("--series-1"), borderRadius: 4, borderSkipped: "start", barThickness: 22 }] },
-      options: {
-        indexAxis: "y", responsive: true, maintainAspectRatio: false,
-        scales: { x: { beginAtZero: true, ticks: { precision: 0 }, border: { display: false } }, y: { grid: { display: false }, ticks: { color: css("--text-primary") } } },
-        plugins: { tooltip: { displayColors: false, callbacks: { label: (it) => `${nf.format(it.parsed.x)} patients (${tot ? nf1.format(it.parsed.x / tot * 100) : 0} %)` } } },
+      data: {
+        labels: rows.map((x) => `${x.r.unit} (${nf1.format(x.s.pctSevere)} %)`),
+        datasets: SEVERITY.map(([, l], i) => ({ label: l, data: rows.map((x) => P.pct(x.s.vals[i] || 0, x.s.classes)), raw: rows.map((x) => x.s.vals[i]),
+          backgroundColor: colors[i], borderColor: css("--surface-1"), borderWidth: { right: 2 }, borderSkipped: false, barThickness: 18 })),
       },
+      options: { ...hbar({ x: { max: 100, stacked: true, ticks: { callback: (v) => v + " %" } } }), scales: { x: { stacked: true, max: 100, border: { display: false }, ticks: { callback: (v) => v + " %" } }, y: { stacked: true, grid: { display: false }, ticks: { color: css("--text-primary") } } },
+        interaction: { mode: "index", axis: "y", intersect: false },
+        plugins: { tooltip: { callbacks: {
+          title: (it) => rows[it[0].dataIndex].r.unit,
+          label: (it) => { const raw = it.dataset.raw[it.dataIndex]; return ` ${it.dataset.label} : ${raw == null ? "non saisi" : `${nf.format(raw)} (${nf1.format(it.parsed.x)} %)`}`; },
+          afterBody: (it) => { const x = rows[it[0].dataIndex]; return `${nf.format(x.s.classes)} patients classés / ${x.r.cas == null ? "?" : nf.format(x.r.cas)} cas`; },
+        } } } },
     }));
+  }
 
-    const occ = latest.map((s) => ({ name: unitName(s, L), internes: m(s, L, "nb_patients_internes") || 0, lits: m(s, L, "nb_lits_dedies") || 0 }))
-      .filter((r) => r.lits || r.internes).map((r) => ({ ...r, taux: r.lits ? r.internes / r.lits * 100 : null })).sort((a, b) => (b.taux ?? 999) - (a.taux ?? 999));
-    $("occ-box").style.height = Math.max(220, occ.length * 32 + 40) + "px";
+  function renderStocks(L, recs) {
+    $("stock-legend").innerHTML = ["suffisant", "modere", "sous_tension", "insuffisant", "rupture"].map((k) => badge(STATUS[k])).join("");
+    $("stock-sub").textContent = state.level === "as"
+      ? "Une ligne par structure (UTC, CTC, salle d'isolement) déclarée dans l'aire · quantité entre parenthèses"
+      : "Dernier rapport de chaque unité · quantité en cartons ou unités entre parenthèses";
+    const rows = recs.flatMap((r) => r.stockRows.map((row) => ({ r, row,
+      worst: Math.min(...STOCKS.map(([k]) => P.RANK[P.stockStatus(row.stocks[k])?.[0]] ?? 5)) })))
+      .sort((a, b) => a.worst - b.worst || a.r.unit.localeCompare(b.r.unit));
+    const title = L.one[0].toUpperCase() + L.one.slice(1);
+    $("stock-table").innerHTML = rows.length ? `<thead><tr><th>${title}</th>${state.level === "as" ? "<th>Structure</th>" : ""}${STOCKS.map(([, l]) => `<th>${l}</th>`).join("")}<th>Mis à jour</th></tr></thead><tbody>` +
+      rows.map(({ r, row }) => `<tr><td class="unit">${esc(r.label)}</td>${state.level === "as" ? `<td>${esc(row.label)}</td>` : ""}${STOCKS.map(([k]) => {
+        const st = row.stocks[k];
+        return `<td>${badge(P.stockStatus(st))}${st.dispo === "oui" ? `<span class="qty">(${st.qte == null ? "qté non saisie" : nf.format(st.qte)})</span>` : ""}</td>`;
+      }).join("")}<td>${freshness(r.date)}</td></tr>`).join("") + "</tbody>"
+      : `<tbody><tr><td class="empty">Aucun stock déclaré pour ce niveau.</td></tr></tbody>`;
+  }
+
+  function renderOccupation(recs) {
+    const occ = recs.map((r) => ({ name: r.unit, internes: r.hosp.nb_patients_internes, lits: r.hosp.nb_lits_dedies }))
+      .filter((x) => x.lits || x.internes).map((x) => ({ ...x, taux: x.lits ? (x.internes || 0) / x.lits * 100 : null }))
+      .sort((a, b) => (b.taux ?? 999) - (a.taux ?? 999));
+    boxHeight("occ-box", occ.length, 32);
     const colorFor = (t) => css(t == null || t >= 100 ? "--critical" : t >= 80 ? "--serious" : "--series-1");
     charts.push(new Chart($("occupation"), {
-      type: "bar",
-      data: { labels: occ.map((r) => r.name), datasets: [{ data: occ.map((r) => r.taux == null ? 100 : Math.min(r.taux, 150)), backgroundColor: occ.map((r) => colorFor(r.taux)), borderRadius: 4, borderSkipped: "start", barThickness: 16 }] },
-      options: {
-        indexAxis: "y", responsive: true, maintainAspectRatio: false,
-        scales: { x: { beginAtZero: true, suggestedMax: 100, ticks: { callback: (v) => v + " %" }, border: { display: false } }, y: { grid: { display: false }, ticks: { color: css("--text-primary") } } },
-        plugins: { tooltip: { displayColors: false, callbacks: { label: (it) => { const r = occ[it.dataIndex];
-          return [`${nf.format(r.internes)} internés / ${nf.format(r.lits)} lits dédiés`, r.taux == null ? "Aucun lit dédié" : `Occupation : ${nf1.format(r.taux)} %${r.taux >= 100 ? " — saturé" : r.taux >= 80 ? " — tension" : ""}`]; } } } },
-      },
+      type: "bar", plugins: [valueLabels],
+      data: { labels: occ.map((x) => x.name), datasets: [{ data: occ.map((x) => x.taux == null ? 100 : Math.min(x.taux, 150)), backgroundColor: occ.map((x) => colorFor(x.taux)), borderRadius: 4, borderSkipped: "start", barThickness: 16 }] },
+      options: { ...hbar({ x: { suggestedMax: 110, ticks: { callback: (v) => v + " %" } }, padRight: 70 }),
+        plugins: {
+          valueLabels: { format: (i) => occ[i].taux == null ? "lits non saisis" : `${nf1.format(occ[i].taux)} %` },
+          tooltip: { displayColors: false, callbacks: { label: (it) => { const x = occ[it.dataIndex];
+            return [`${x.internes == null ? "?" : nf.format(x.internes)} internés / ${x.lits == null ? "?" : nf.format(x.lits)} lits dédiés`, x.taux == null ? "Lits dédiés non saisis" : x.taux >= 100 ? "Saturé" : x.taux >= 80 ? "En tension" : "Capacité disponible"]; } } },
+        } },
+    }));
+  }
+
+  function renderCommDeaths(recs) {
+    const rows = recs.filter((r) => r.comm.deces != null).sort((a, b) => b.comm.deces - a.comm.deces);
+    boxHeight("comm-box", rows.length, 32);
+    charts.push(new Chart($("commdeaths"), {
+      type: "bar", plugins: [valueLabels],
+      data: { labels: rows.map((r) => r.unit), datasets: [{ data: rows.map((r) => r.comm.deces), backgroundColor: css("--series-2"), borderRadius: 4, borderSkipped: "start", barThickness: 16 }] },
+      options: { ...hbar({ x: { ticks: { precision: 0 } }, padRight: 30 }),
+        plugins: {
+          valueLabels: { format: (i) => nf.format(rows[i].comm.deces) },
+          tooltip: { displayColors: false, callbacks: { label: (it) => { const r = rows[it.dataIndex];
+            return [`${nf.format(r.comm.deces)} décès en communauté`, `${r.comm.patients == null ? "non saisi" : nf.format(r.comm.patients)} patients pris en charge en communauté`, `PRO fonctionnels : ${r.comm.proFonct == null ? "non saisi" : nf.format(r.comm.proFonct)}`]; } } },
+        } },
     }));
   }
 
   // ---------- Tableaux détaillés ----------
-  function yn(s, L, flag, count) {
-    const v = raw(s, L, flag);
-    if (v === "non") return `<span class="muted">Non</span>`;
-    const n = m(s, L, count);
-    return v === "oui" ? (n != null ? nf.format(n) : "Oui") : "—";
+  function yn(x) {
+    if (x.flag === "non") return `<span class="muted">Non</span>`;
+    if (x.flag === "oui") return x.n != null ? nf.format(x.n) : "Oui";
+    return NS;
   }
-  function renderDetail() {
-    if (!state.data) return;
-    const L = LEVELS[state.level], latest = latestByUnit(state.level).sort((a, b) => unitName(a, L).localeCompare(unitName(b, L)));
-    const n = (s, k) => { const v = m(s, L, k); return v == null ? "—" : nf.format(v); };
-    const hosp = state.level !== "as";
+  function renderDetail(recs) {
+    const L = LEVELS[state.level], rows = recs.slice().sort((a, b) => a.unit.localeCompare(b.unit));
     let cols;
     if (state.tab === "capacite") cols = [
-      ["UTC", (s) => n(s, "nb_utc")], ["CTC", (s) => n(s, "nb_ctc")], ["Salles d'isolement", (s) => n(s, "nb_salles_isolement")],
-      ...(hosp ? [["Lits disponibles", (s) => n(s, "nb_lits_dispo")], ["Lits-types choléra", (s) => n(s, "nb_lits_types_cholera")], ["Lits dédiés", (s) => n(s, "nb_lits_dedies")],
-        ["Internés", (s) => n(s, "nb_patients_internes")], ["Létalité intrahosp.", (s) => { const v = m(s, L, "taux_letalite_intrahosp"); return v == null ? "—" : nf1.format(v) + " %"; }]] : []),
-      ["PRO", (s) => yn(s, L, "pro_disponibles", "nb_pro")],
+      ["UTC", (r) => n(r.cap.utc)], ["CTC", (r) => n(r.cap.ctc)], ["Salles d'isolement", (r) => n(r.cap.salles)],
+      ["Lits disponibles", (r) => n(r.hosp.nb_lits_dispo)], ["Lits-types choléra", (r) => n(r.hosp.nb_lits_types_cholera)], ["Lits dédiés", (r) => n(r.hosp.nb_lits_dedies)],
+      ["Internés", (r) => n(r.hosp.nb_patients_internes)], ["Guéris", (r) => n(r.hosp.nb_patients_gueris)],
+      ["Létalité saisie", (r) => (state.level === "as" ? "—" : r.letaliteSaisie == null ? NS : fmtPct(r.letaliteSaisie))],
+      ["Létalité recalculée", (r) => fmtPct(r.letalite)],
+      ["PRO", (r) => r.cap.pro === "non" ? `<span class="muted">Non</span>` : r.cap.pro === "oui" ? (r.cap.nbPro != null ? nf.format(r.cap.nbPro) : "Oui") : NS],
     ];
-    else if (state.tab === "rh") cols = hosp ? [
-      ["Médical dispo.", (s) => yn(s, L, "personnel_medical_dispo", "nb_personnel_medical_dispo")],
-      ["Médical dédié", (s) => yn(s, L, "personnel_medical_dedie", "nb_personnel_medical_dedie")],
-      ["Paraméd. dispo.", (s) => yn(s, L, "personnel_parameds_dispo", "nb_personnel_parameds_dispo")],
-      ["Paraméd. dédié", (s) => yn(s, L, "personnel_parameds_dedie", "nb_personnel_parameds_dedie")],
-      ["Paraméd. formés", (s) => yn(s, L, "parameds_formes", "nb_parameds_formes")],
-      ["ASC FOSA dispo.", (s) => yn(s, L, "asc_dispo_fosa", "nb_asc_dispo_fosa")],
-      ["ASC FOSA formés", (s) => yn(s, L, "asc_formes_fosa", "nb_asc_formes_fosa")],
-      ["WASH", (s) => yn(s, L, "personnel_wash_dispo", "nb_personnel_wash")],
-      ["Chimioprophylaxie ASC", (s) => yn(s, L, "chimioprophylaxie_asc", "nb_asc_chimioprophylaxie")],
-    ] : null;
+    else if (state.tab === "rh") cols = RH.map(([f, , l]) => [l.replace("Personnel ", "").replace("disponible", "dispo."), (r) => yn(r.rh[f])]);
     else cols = [
-      ["Patients PEC", (s) => n(s, "nb_patients_communaute")], ["Décès", (s) => n(s, "nb_deces_communaute")],
-      ["Létalité", (s) => { const v = m(s, L, "taux_letalite_communaute"); return v == null ? "—" : nf1.format(v) + " %"; }],
-      ["ASC disponibles", (s) => n(s, "nb_asc_dispo_communaute")], ["ASC formés", (s) => n(s, "nb_asc_formes_communaute")],
-      ["PRO fonctionnels", (s) => n(s, "nb_pro_fonctionnels_communaute")],
-      ["Chimioprophylaxie contacts", (s) => { const v = raw(s, L, "chimio_contacts"); return v === "oui" ? badge(STATUS.suffisant).replace("Suffisant", "Oui") : v === "non" ? `<span class="muted">Non</span>` : "—"; }],
+      ["Patients PEC", (r) => n(r.comm.patients)], ["Décès", (r) => n(r.comm.deces)],
+      ["Létalité saisie", (r) => r.comm.letaliteSaisie == null ? NS : fmtPct(r.comm.letaliteSaisie)],
+      ["ASC disponibles", (r) => n(r.comm.ascDispo)], ["ASC formés", (r) => n(r.comm.ascFormes)],
+      ["PRO fonctionnels", (r) => n(r.comm.proFonct)],
+      ["Chimioprophylaxie contacts", (r) => r.comm.chimioContacts === "oui" ? badge(["good", "✓", "Oui"]) : r.comm.chimioContacts === "non" ? badge(["critical", "✕", "Non"]) : NS],
     ];
     const t = $("detail-table");
-    if (!cols) { t.innerHTML = `<tbody><tr><td class="empty">La fiche Aire de santé ne contient pas de section ressources humaines.</td></tr></tbody>`; return; }
-    if (!latest.length) { t.innerHTML = `<tbody><tr><td class="empty">Aucun rapport pour ce niveau.</td></tr></tbody>`; return; }
-    t.innerHTML = `<thead><tr><th>${L.one[0].toUpperCase() + L.one.slice(1)}</th>${cols.map(([l]) => `<th class="num">${l}</th>`).join("")}<th>Mis à jour</th></tr></thead><tbody>` +
-      latest.map((s) => `<tr><td class="unit">${esc(unitName(s, L))}</td>${cols.map(([, f]) => `<td class="num">${f(s)}</td>`).join("")}<td>${freshness(s)}</td></tr>`).join("") + "</tbody>";
+    if (!rows.length) { t.innerHTML = `<tbody><tr><td class="empty">Aucun rapport pour ce niveau.</td></tr></tbody>`; return; }
+    const note = state.level === "as" && state.tab !== "communaute" ? ` <span class="muted">(somme des structures)</span>` : "";
+    t.innerHTML = `<thead><tr><th>${L.one[0].toUpperCase() + L.one.slice(1)}${note}</th>${cols.map(([l]) => `<th class="num">${l}</th>`).join("")}<th>Mis à jour</th></tr></thead><tbody>` +
+      rows.map((r) => `<tr><td class="unit">${esc(r.label)}</td>${cols.map(([, f]) => `<td class="num">${f(r)}</td>`).join("")}<td>${freshness(r.date)}</td></tr>`).join("") + "</tbody>";
+  }
+
+  function renderQuality(recs) {
+    const q = P.qualityChecks(recs);
+    const crit = q.filter((x) => x.sev === "critical").length;
+    $("quality-sub").textContent = q.length ? `${q.length} anomalie${q.length > 1 ? "s" : ""} détectée${q.length > 1 ? "s" : ""}, dont ${crit} incohérence${crit > 1 ? "s" : ""} · règles du rapport d'analyse exploratoire` : "Aucune anomalie détectée";
+    $("quality").innerHTML = q.length ? `<thead><tr><th>Gravité</th><th>Site</th><th>Anomalie constatée</th><th>Action proposée</th></tr></thead><tbody>` +
+      q.map((x) => `<tr><td>${badge(Q_BADGE[x.sev])}</td><td class="unit">${esc(x.site)}</td><td class="wrap">${esc(x.text)}</td><td class="wrap muted">${esc(x.action)}</td></tr>`).join("") + "</tbody>"
+      : `<tbody><tr><td class="empty">Aucune anomalie de cohérence sur les derniers rapports.</td></tr></tbody>`;
   }
 
   // ---------- Rapports + export ----------
   function reportRows() {
-    let rows = state.data.submissions.filter((s) => !state.region || s.region === state.region)
-      .slice().sort((a, b) => sortKey(b).localeCompare(sortKey(a)));
-    const fmt = (s) => {
-      const k = levelOf(s), L = LEVELS[k];
-      return {
-        date: subDate(s), type: choiceLabel("type_fiche", s.type_fiche), region: choiceLabel("region", s.region),
-        unite: L ? unitName(s, L) : "", cas: L ? num(s[L.cas]) : null, deces: L ? num(s[L.deces]) : null,
-        qualif: choiceLabel("qualification_repondant", s.qualification_repondant), par: s._submitted_by || "",
-      };
-    };
-    rows = rows.map(fmt);
+    let rows = P.data.submissions.filter((s) => !state.region || s.region === state.region)
+      .slice().sort((a, b) => (P.subDate(b) - P.subDate(a)) || String(b._submission_time).localeCompare(String(a._submission_time)))
+      .map((s) => {
+        const k = P.levelOf(s), L = LEVELS[k];
+        return { date: P.subDate(s), type: P.choiceLabel("type_fiche", s.type_fiche), region: P.choiceLabel("region", s.region),
+          unite: L ? P.choiceLabel(L.unit, s[L.unit]) : "", cas: L ? num(s[L.cas]) : null, deces: L ? num(s[L.deces]) : null,
+          qualif: P.choiceLabel("qualification_repondant", s.qualification_repondant), par: s._submitted_by || "",
+          valid: s._validation_status && s._validation_status.label || "" };
+      });
     if (state.search) rows = rows.filter((r) => Object.values(r).some((v) => String(v ?? "").toLowerCase().includes(state.search)));
     return rows;
   }
   function renderReports() {
     const rows = reportRows(), shown = rows.slice(0, 150);
-    $("reports-sub").textContent = `${nf.format(rows.length)} rapport${rows.length > 1 ? "s" : ""}${state.region ? " · " + choiceLabel("region", state.region) : ""}`;
-    $("reports").innerHTML = rows.length ? `<thead><tr><th>Date du recueil</th><th>Fiche</th><th>Région</th><th>Unité</th><th class="num">Cas</th><th class="num">Décès</th><th>Qualification</th><th>Compte Kobo</th></tr></thead><tbody>` +
+    $("reports-sub").textContent = `${nf.format(rows.length)} rapport${rows.length > 1 ? "s" : ""}${state.region ? " · " + P.choiceLabel("region", state.region) : ""}`;
+    $("reports").innerHTML = rows.length ? `<thead><tr><th>Date du recueil</th><th>Fiche</th><th>Région</th><th>Unité</th><th class="num">Cas</th><th class="num">Décès</th><th>Qualification</th><th>Validation</th><th>Compte Kobo</th></tr></thead><tbody>` +
       shown.map((r) => `<tr><td>${r.date ? r.date.toLocaleDateString("fr-FR") : "—"}</td><td>${esc(r.type)}</td><td>${esc(r.region)}</td><td class="unit">${esc(r.unite)}</td>
-        <td class="num">${r.cas == null ? "—" : nf.format(r.cas)}</td><td class="num">${r.deces == null ? "—" : nf.format(r.deces)}</td><td>${esc(r.qualif)}</td><td class="muted">${esc(r.par)}</td></tr>`).join("") + "</tbody>"
+        <td class="num">${r.cas == null ? "—" : nf.format(r.cas)}</td><td class="num">${r.deces == null ? "—" : nf.format(r.deces)}</td><td>${esc(r.qualif)}</td><td class="muted">${esc(r.valid || "—")}</td><td class="muted">${esc(r.par)}</td></tr>`).join("") + "</tbody>"
       : `<tbody><tr><td class="empty">Aucun rapport.</td></tr></tbody>`;
   }
   function exportCsv() {
     const q = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-    const head = ["Date du recueil", "Fiche", "Région", "Unité", "Cas", "Décès", "Qualification", "Compte Kobo"];
-    const lines = reportRows().map((r) => [r.date ? r.date.toISOString().slice(0, 10) : "", r.type, r.region, r.unite, r.cas, r.deces, r.qualif, r.par].map(q).join(";"));
+    const head = ["Date du recueil", "Fiche", "Région", "Unité", "Cas", "Décès", "Qualification", "Validation", "Compte Kobo"];
+    const lines = reportRows().map((r) => [r.date ? r.date.toISOString().slice(0, 10) : "", r.type, r.region, r.unite, r.cas, r.deces, r.qualif, r.valid, r.par].map(q).join(";"));
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob(["﻿" + [head.map(q).join(";"), ...lines].join("\n")], { type: "text/csv;charset=utf-8" }));
     a.download = `pec-cholera-${new Date().toISOString().slice(0, 10)}.csv`;
@@ -521,15 +560,17 @@
   // ---------- Chargement ----------
   loadDashboardData()
     .then((data) => {
-      state.data = data;
-      data.form.fields.forEach((f) => { fieldByName[f.name] = f; fieldByName[f.name.split("/").pop()] ??= f; });
+      P.setData(data);
       $("title").textContent = data.form.name || "Prise en charge du choléra";
       const up = data.updated_at ? new Date(data.updated_at).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" }) : "—";
       $("updated").textContent = `Données KoboToolbox · mises à jour le ${up}`;
       if (data.demo) $("banner").innerHTML = `<div class="banner">Données de démonstration fictives. Ajoute les secrets <b>KOBO_TOKEN</b> et <b>DASHBOARD_PASSWORD</b> au dépôt puis lance le workflow pour afficher les vraies données.</div>`;
-      const regions = [...new Set(data.submissions.map((s) => s.region).filter(Boolean))].sort((a, b) => choiceLabel("region", a).localeCompare(choiceLabel("region", b)));
-      $("region-filter").innerHTML = `<option value="">Toutes les régions</option>` + regions.map((r) => `<option value="${esc(r)}">${esc(choiceLabel("region", r))}</option>`).join("");
-      state.level = ["region", "district", "as"].find((k) => data.submissions.some((s) => levelOf(s) === k)) || "region";
+      const regions = [...new Set(data.submissions.map((s) => s.region).filter(Boolean))].sort((a, b) => P.choiceLabel("region", a).localeCompare(P.choiceLabel("region", b)));
+      $("region-filter").innerHTML = `<option value="">Toutes les régions</option>` + regions.map((r) => `<option value="${esc(r)}">${esc(P.choiceLabel("region", r))}</option>`).join("");
+      // Niveau par défaut : celui qui compte le plus d'unités rapportantes
+      const counts = Object.keys(LEVELS).map((k) => [k, new Set(data.submissions.filter((s) => P.levelOf(s) === k).map((s) => s[LEVELS[k].unit])).size]);
+      state.level = counts.sort((a, b) => b[1] - a[1])[0][0];
+      $("report-btn").disabled = false;
       render();
     })
     .catch((e) => {

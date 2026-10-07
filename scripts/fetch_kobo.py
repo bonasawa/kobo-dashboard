@@ -71,12 +71,15 @@ def parse_form(asset):
             {"name": c.get("name") or c.get("$autoname"),
              "label": first_label(c.get("label"), c.get("name"))})
 
-    fields, groups = [], []
+    fields, groups = [], []  # groups : pile de (nom, est_une_répétition)
     for row in content.get("survey", []):
         t = row.get("type", "")
         name = row.get("name") or row.get("$autoname")
         if t in ("begin_group", "begin_repeat"):
-            groups.append(name)
+            groups.append((name, t == "begin_repeat"))
+            if t == "begin_repeat":
+                xpath = row.get("$xpath") or "/".join(g for g, _ in groups)
+                fields.append({"name": xpath, "label": first_label(row.get("label"), name), "type": "repeat"})
             continue
         if t in ("end_group", "end_repeat"):
             if groups:
@@ -85,8 +88,11 @@ def parse_form(asset):
         if t in SKIP_TYPES or not name or name in EXCLUDE:
             continue
         base = t.split(" ")[0]
-        xpath = row.get("$xpath") or "/".join(groups + [name])
+        xpath = row.get("$xpath") or "/".join([g for g, _ in groups] + [name])
         field = {"name": xpath, "label": first_label(row.get("label"), name), "type": base}
+        repeats = ["/".join(g for g, _ in groups[:i + 1]) for i, (_, rep) in enumerate(groups) if rep]
+        if repeats:
+            field["repeat"] = repeats[-1]
         if base in ("select_one", "select_multiple"):
             list_name = row.get("select_from_list_name") or (t.split(" ")[1] if " " in t else None)
             field["choices"] = choices.get(list_name, [])
@@ -136,10 +142,13 @@ def read_existing():
     return json.loads(plain), salt
 
 
-def clean(sub, field_names):
+def clean(sub, field_names, repeat_names):
+    """Garde les métadonnées utiles, les champs du formulaire et les tables de répétition."""
     out = {k: v for k, v in sub.items() if k in KEEP_META}
     for k, v in sub.items():
-        if k in field_names:
+        if k in repeat_names and isinstance(v, list):
+            out[k] = [clean(row, field_names, repeat_names) for row in v if isinstance(row, dict)]
+        elif k in field_names:
             out[k] = v
     return out
 
@@ -153,8 +162,9 @@ def main():
                  "Ajoute le secret DASHBOARD_PASSWORD (ou ALLOW_PUBLIC=true pour publier sans protection).")
     asset = get(f"{SERVER}/api/v2/assets/{ASSET_UID}/?format=json")
     fields = parse_form(asset)
-    names = {f["name"] for f in fields}
-    subs = [clean(s, names) for s in fetch_submissions()]
+    names = {f["name"] for f in fields if f["type"] != "repeat"}
+    repeats = {f["name"] for f in fields if f["type"] == "repeat"}
+    subs = [clean(s, names, repeats) for s in fetch_submissions()]
     subs.sort(key=lambda s: s.get("_submission_time", ""))
 
     data = {
